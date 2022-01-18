@@ -51,7 +51,7 @@ TBD welcome paragraph
 
 ### :wave: Welcome to "TBD"!
 
-**What is _TBD**: TBD
+**What is _TBD_**: TBD
 
 ### :keyboard: Activity: TBD
 
@@ -74,7 +74,7 @@ TBD welcome paragraph
 
 TBD
 
-**What is _TBD**: TBD
+**What is _TBD_**: TBD
 
 ### :keyboard: Activity: TBD
 
@@ -96,7 +96,7 @@ TBD
 
 TBD
 
-**What is _TBD**: TBD
+**What is _TBD_**: TBD
 
 ### :keyboard: Activity: TBD
 
@@ -118,7 +118,7 @@ TBD
 
 TBD
 
-**What is _TBD**: TBD
+**What is _TBD_**: TBD
 
 ### :keyboard: Activity: TBD
 
