@@ -134,7 +134,7 @@ TBD
 -->
 
 <details id=5>
-<summary><strong>:dancer: Step 5: Merge your pull request</strong></summary>
+<summary><strong>:shipit: Step 5: Merge your pull request</strong></summary>
 
 ### :heart: Almost there TBD!
 
