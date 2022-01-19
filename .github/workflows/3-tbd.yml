@@ -10,6 +10,11 @@ on:
   workflow_dispatch:
   TBD:
 
+permissions:
+  # Need `contents: read` to checkout the repository
+  # Need `contents: write` to update the step metadata
+  contents: write
+
 jobs:
   on_TBD:
     name: On TBD
