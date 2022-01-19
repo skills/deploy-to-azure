@@ -143,6 +143,7 @@ You can now [merge](https://help.github.com/articles/github-glossary/#merge) you
 ### :keyboard: Activity: Merge your pull request
 
 1. Click **Merge pull request**
+1. Delete the branch `TBD` (optional)
 1. Wait about 20 seconds then refresh this page for the next step
 
 </details>
