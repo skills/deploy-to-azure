@@ -30,10 +30,10 @@ _TBD course description_
 
 TBD welcome paragraph
 
-- **Who is this for**: TBD
-- **What you'll learn**: TBD
-- **What you'll build**: TBD
-- **Prerequisites**: TBD
+- **Who is this for**: TBD.
+- **What you'll learn**: TBD.
+- **What you'll build**: TBD.
+- **Prerequisites**: TBD.
 - **How long**: This course is TBD steps and takes less than TBD.
 
 </details>
@@ -55,9 +55,9 @@ TBD welcome paragraph
 
 ### :keyboard: Activity: TBD
 
-1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab
-1. TBD
-1. Wait about 20 seconds then refresh this page for the next step
+1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
+1. TBD.
+1. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
 
@@ -78,8 +78,8 @@ TBD
 
 ### :keyboard: Activity: TBD
 
-1. TBD
-1. Wait about 20 seconds then refresh this page for the next step
+1. TBD.
+1. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
 
@@ -100,8 +100,8 @@ TBD
 
 ### :keyboard: Activity: TBD
 
-1. TBD
-1. Wait about 20 seconds then refresh this page for the next step
+1. TBD.
+1. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
 
@@ -122,8 +122,8 @@ TBD
 
 ### :keyboard: Activity: TBD
 
-1. TBD
-1. Wait about 20 seconds then refresh this page for the next step
+1. TBD.
+1. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
 
@@ -142,9 +142,9 @@ You can now [merge](https://help.github.com/articles/github-glossary/#merge) you
 
 ### :keyboard: Activity: Merge your pull request
 
-1. Click **Merge pull request**
-1. Delete the branch `TBD` (optional)
-1. Wait about 20 seconds then refresh this page for the next step
+1. Click **Merge pull request**.
+1. Delete the branch `TBD` (optional).
+1. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
 
@@ -162,15 +162,15 @@ You can now [merge](https://help.github.com/articles/github-glossary/#merge) you
 
 Here's a recap of all the tasks you've accomplished in your repository:
 
-- TBD
+- TBD.
 
 ### What's next?
 
-- TBD
-- We'd love to hear what you thought of this course [in our community forum](https://github.community/c/education/github-learning-lab/34)
-- [Take another GitHub Learn Course](https://github.com/githublearn)
-- [Read the GitHub Getting Started docs](https://docs.github.com/en/get-started)
-- To find projects to contribute to, check out [GitHub Explore](https://github.com/explore)
+- TBD.
+- We'd love to hear what you thought of this course [in our community forum](https://github.community/c/education/github-learning-lab/34).
+- [Take another GitHub Learn Course](https://github.com/githublearn).
+- [Read the GitHub Getting Started docs](https://docs.github.com/en/get-started).
+- To find projects to contribute to, check out [GitHub Explore](https://github.com/explore).
 
 </details>
 
