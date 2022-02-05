@@ -63,7 +63,7 @@ TBD welcome paragraph
 
 <!--
   <<< Author notes: Step 2 >>>
-  Start this step by acknowledging the first step.
+  Start this step by acknowledging the previous step.
   Define terms and link to docs.github.com.
 -->
 
@@ -85,7 +85,7 @@ TBD
 
 <!--
   <<< Author notes: Step 3 >>>
-  Start this step by acknowledging the first step.
+  Start this step by acknowledging the previous step.
   Define terms and link to docs.github.com.
 -->
 
@@ -107,7 +107,7 @@ TBD
 
 <!--
   <<< Author notes: Step 4 >>>
-  Start this step by acknowledging the first step.
+  Start this step by acknowledging the previous step.
   Define terms and link to docs.github.com.
 -->
 
@@ -129,7 +129,7 @@ TBD
 
 <!--
   <<< Author notes: Step 5 >>>
-  Start this step by acknowledging the first step.
+  Start this step by acknowledging the previous step.
   Define terms and link to docs.github.com.
 -->
 
