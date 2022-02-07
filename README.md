@@ -14,7 +14,7 @@ _TBD-course-description_
 
 <!--
   <<< Author notes: Start of the course >>>
-  Include start button, a note about actions minutes,
+  Include start button, a note about Actions minutes,
   and tell the learner why they should take the course.
   Each step should be wrapped in <details>/<summary>, with an `id` set.
   The start <details> should have `open` as well.
@@ -35,7 +35,7 @@ TBD-welcome-paragraph
 - **What you'll learn**: TBD-objective.
 - **What you'll build**: TBD-result.
 - **Prerequisites**: TBD-prerequisites.
-- **How long**: This course is TBD-step-count steps and takes less than TBD-duration.
+- **How long**: This course is TBD-step-count steps long and takes less than TBD-duration to complete.
 
 </details>
 
