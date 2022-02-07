@@ -51,7 +51,7 @@ TBD-welcome-paragraph
 <details id=1 open>
 <summary><strong>:TBD-step-1-emoji: Step 1: TBD-step-1-name</strong></summary>
 
-### :wave: Welcome to "TBD-course-name"!
+### Welcome to "TBD-course-name"! :wave:
 
 TBD-step-1-information
 
@@ -75,7 +75,7 @@ TBD-step-1-information
 <details id=2>
 <summary><strong>:TBD-step-2-emoji: Step 2: TBD-step-2-name</strong></summary>
 
-### :tada: You did TBD-step-1-name!
+### You did TBD-step-1-name! :tada:
 
 TBD-step-2-information
 
@@ -144,7 +144,7 @@ TBD-step-4-information
 <details id=5>
 <summary><strong>:shipit: Step 5: Merge your pull request</strong></summary>
 
-### :heart: Almost there TBD-step-4-name!
+### Almost there TBD-step-4-name! :heart:
 
 You can now [merge](https://docs.github.com/en/get-started/quickstart/github-glossary#merge) your pull request!
 
