@@ -1,14 +1,14 @@
-name: Step 4, TBD
+name: Step 4, TBD-step-4-name
 
-# This step triggers after TBD
+# This step triggers after TBD-step-4-event-desc
 # This step sets STEP to 5
 # This step closes <details id=4> and opens <details id=5>
 
-# This will run every time we TBD
+# This will run every time we TBD-step-4-event-desc
 # Reference https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
-  TBD:
+  TBD-step-4-event:
 
 permissions:
   # Need `contents: read` to checkout the repository
@@ -16,15 +16,15 @@ permissions:
   contents: write
 
 jobs:
-  on_TBD:
-    name: On TBD
+  on_TBD-step-4-event:
+    name: On TBD-step-4-event
 
     # We will only run this action when:
     # 1. This repository isn't the template repository
     # 2. The STEP is currently 4 (see update-step.sh)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'githublearn' }}
+    if: ${{ github.repository_owner != 'TBD-org' }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # TBD include any further steps here
+      # TBD-step-4-additional-steps
 
       # Update README to close <details id=4>
       # and open <details id=5>
@@ -47,4 +47,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FROM_STEP: 4
           TO_STEP: 5
-          BRANCH_NAME: TBD
+          BRANCH_NAME: TBD-branch-name

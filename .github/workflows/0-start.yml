@@ -26,7 +26,7 @@ jobs:
     # 2. The STEP is currently '0' (see update-step.sh)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'githublearn' }}
+    if: ${{ github.repository_owner != 'TBD-org' }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # TBD Include any additional set up steps here
+      # TBD-course-set-up
 
       # Update README to close <details id=0>
       # and open <details id=1>
@@ -49,4 +49,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FROM_STEP: 0
           TO_STEP: 1
-          BRANCH_NAME: TBD
+          BRANCH_NAME: TBD-branch-name
