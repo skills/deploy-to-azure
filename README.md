@@ -21,10 +21,10 @@ _TBD-course-description_
   Do not use quotes on the <details> tag attributes.
 -->
 
-<details id=0>
+<details id=0 open>
 <summary><strong>:golf: Start</strong></summary>
 
-**To start this course: [<img width="150" alt="Use this template" src="https://user-images.githubusercontent.com/1221423/148581131-555c0fb8-5361-4450-a760-75fa6219a2fc.png">](https://github.com/TBD-org/TBD-repository-name/generate)**
+**To start this course: [<img width="150" alt="Use this template" src="https://user-images.githubusercontent.com/1221423/148581131-555c0fb8-5361-4450-a760-75fa6219a2fc.png">](https://github.com/TBD-organization/TBD-repository-name/generate)**
 
 > We recommend creating a public repository, as private repositories will [use Actions minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).<br>
 > After you make your own repository, wait about 20 seconds and refresh. I will go to the next step.
@@ -48,7 +48,7 @@ TBD-welcome-paragraph
   TBD-step-1-notes.
 -->
 
-<details id=1 open>
+<details id=1>
 <summary><strong>:TBD-step-1-emoji: Step 1: TBD-step-1-name</strong></summary>
 
 ### Welcome to "TBD-course-name"! :wave:
@@ -176,7 +176,7 @@ Here's a recap of all the tasks you've accomplished in your repository:
 
 - TBD-continue.
 - [We'd love to hear what you thought of this course](TBD-feedback-link).
-- [Take another TBD-org Course](https://github.com/TBD-org).
+- [Take another TBD-organization Course](https://github.com/TBD-organization).
 - [Read the GitHub Getting Started docs](https://docs.github.com/en/get-started).
 - To find projects to contribute to, check out [GitHub Explore](https://github.com/explore).
 
