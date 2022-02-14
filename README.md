@@ -21,7 +21,7 @@ _TBD-course-description_
   Do not use quotes on the <details> tag attributes.
 -->
 
-<details id=0 open>
+<details id=0>
 <summary><strong>:golf: Start</strong></summary>
 
 **To start this course: [<img width="150" alt="Use this template" src="https://user-images.githubusercontent.com/1221423/148581131-555c0fb8-5361-4450-a760-75fa6219a2fc.png">](https://github.com/TBD-organization/TBD-repository-name/generate)**
@@ -48,7 +48,7 @@ TBD-welcome-paragraph
   TBD-step-1-notes.
 -->
 
-<details id=1>
+<details id=1 open>
 <summary><strong>:TBD-step-1-emoji: Step 1: TBD-step-1-name</strong></summary>
 
 ### Welcome to "TBD-course-name"! :wave:
