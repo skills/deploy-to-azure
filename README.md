@@ -6,11 +6,11 @@
   Add your open source license, GitHub uses Creative Commons Attribution 4.0 International.
 -->
 
-<img src=TBD-social-image width=300 align=right>
+<img src="https://repository-images.githubusercontent.com/247808107/d6de8f80-684a-11ea-97d2-5705e8595f0d" width=300 align=right>
 
-# TBD-course-name
+# GitHub Actions: Continuous Delivery with Azure
 
-_TBD-course-description_
+_Create two deployment workflows using GitHub Actions and Microsoft Azure._
 
 <!--
   <<< Author notes: Start of the course >>>
@@ -21,7 +21,7 @@ _TBD-course-description_
   Do not use quotes on the <details> tag attributes.
 -->
 
-<details id=0>
+<details id=0 open>
 <summary><strong>:golf: Start</strong></summary>
 
 **To start this course: [<img width="150" alt="Use this template" src="https://user-images.githubusercontent.com/1221423/148581131-555c0fb8-5361-4450-a760-75fa6219a2fc.png">](https://github.com/TBD-organization/TBD-repository-name/generate)**
@@ -29,13 +29,11 @@ _TBD-course-description_
 > We recommend creating a public repository, as private repositories will [use Actions minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).<br>
 > After you make your own repository, wait about 20 seconds and refresh. I will go to the next step.
 
-TBD-welcome-paragraph
-
-- **Who is this for**: TBD-audience.
-- **What you'll learn**: TBD-objective.
-- **What you'll build**: TBD-result.
-- **Prerequisites**: TBD-prerequisites.
-- **How long**: This course is TBD-step-count steps long and takes less than TBD-duration to complete.
+- **Who is this for**: Developers, DevOps Engineers, new GitHub users, students, teams.
+- **What you'll learn**: We'll learn how to create a workflow that enables Continuous Delivery using GitHub Actions and Microsoft Azure.
+- **What you'll build**: We will create two deployment workflows - the first workflow to deploy to staging based on a label and the second workflow to deploy to production based on merging to main.
+- **Prerequisites**: Before you start, you should be familiar with GitHub and Continuous Integration.
+- **How long**: This course is 11 steps long and takes less than 2 hours to complete.
 
 </details>
 
@@ -48,16 +46,19 @@ TBD-welcome-paragraph
   TBD-step-1-notes.
 -->
 
-<details id=1 open>
-<summary><strong>:TBD-step-1-emoji: Step 1: TBD-step-1-name</strong></summary>
+<details id=1>
+<summary><strong>:zap: Step 1: Configure a trigger based on labels</strong></summary>
 
-### Welcome to "TBD-course-name"! :wave:
+### Welcome to "GitHub Actions: Continuous Delivery with Azure"! :wave:
 
-TBD-step-1-information
+**What is _Continuous Delivery_**: [Martin Fowler](https://martinfowler.com/bliki/ContinuousDelivery.html) defined Continuous Delivery very simply in a 2013 post as follows:
 
-**What is _TBD-term-1_**: TBD-definition-1
+>Continuous Delivery is a software development discipline where you build software in >such a way that the software can be released to production at any time.
 
-### :keyboard: Activity: TBD-step-1-name
+A lot of things go into delivering "continuously". These things can range from culture and behavior to specific automation. In this course, we're going to focus on deployment automation.
+
+### :keyboard: Activity: Configure a trigger based on labels
+In a GitHub Actions workflow, the `on` step defines what causes the workflow to run. In this case, we want the workflow to run whenever a label is applied to the pull request.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
 1. TBD-step-1-instructions.
@@ -73,15 +74,15 @@ TBD-step-1-information
 -->
 
 <details id=2>
-<summary><strong>:TBD-step-2-emoji: Step 2: TBD-step-2-name</strong></summary>
+<summary><strong>:dart: Step 2: Trigger a job on specific labels</strong></summary>
 
-### You did TBD-step-1-name! :tada:
+### You configured a trigger based on labels! :tada:
 
 TBD-step-2-information
 
 **What is _TBD-term-2_**: TBD-definition-2
 
-### :keyboard: Activity: TBD-step-2-name
+### :keyboard: Activity: Trigger a job on specific labels
 
 1. TBD-step-2-instructions.
 1. Wait about 20 seconds then refresh this page for the next step.
@@ -96,7 +97,7 @@ TBD-step-2-information
 -->
 
 <details id=3>
-<summary><strong>:TBD-step-3-emoji: Step 3: TBD-step-3-name</strong></summary>
+<summary><strong>:wrench: Step 3: Set up the environment for your app</strong></summary>
 
 ### Nice work finishing TBD-step-2-name :sparkles:
 
@@ -119,7 +120,7 @@ TBD-step-3-information
 -->
 
 <details id=4>
-<summary><strong>:TBD-step-4-emoji: Step 4: TBD-step-4-name</strong></summary>
+<summary><strong>:arrow_lower_right: Step 4: Merge the staging workflow</strong></summary>
 
 ### Nicely done TBD-step-3-name! :partying_face:
 
@@ -134,6 +135,7 @@ TBD-step-4-information
 
 </details>
 
+
 <!--
   <<< Author notes: Step 5 >>>
   Start this step by acknowledging the previous step.
@@ -142,9 +144,31 @@ TBD-step-4-information
 -->
 
 <details id=5>
-<summary><strong>:shipit: Step 5: Merge your pull request</strong></summary>
+<summary><strong>:cyclone: Step 5: Spin up, configure, and destroy Azure resources</strong></summary>
 
-### Almost there TBD-step-4-name! :heart:
+### Nicely done! :partying_face:
+
+TBD-step-5-information
+
+**What is _TBD-term-5_**: TBD-definition-5
+
+### :keyboard: Activity: TBD-step-5-name
+
+1. TBD-step-5-instructions.
+1. Wait about 20 seconds then refresh this page for the next step.
+
+</details>
+...
+<!--
+  <<< Author notes: Step 10 >>>
+  Start this step by acknowledging the previous step.
+  Define terms and link to docs.github.com.
+  TBD-step-5-notes.
+-->
+<details id=10>
+<summary><strong>:shipit: Step 10: Merge the production workflow</strong></summary>
+
+### Almost there TBD-step-9-name! :heart:
 
 You can now [merge](https://docs.github.com/en/get-started/quickstart/github-glossary#merge) your pull request!
 
