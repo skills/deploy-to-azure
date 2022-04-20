@@ -26,8 +26,7 @@ jobs:
     # 2. The STEP is currently '0' (see update-step.sh)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'githublearn' }}
-    # TBD replace `githublearn` with your organization name, if applicable
+    if: ${{ github.repository_owner != 'InfomagnusOrg' }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows
     runs-on: ubuntu-latest
