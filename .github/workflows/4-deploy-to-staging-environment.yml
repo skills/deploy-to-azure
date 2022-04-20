@@ -1,0 +1,82 @@
+name: Check step 4, Deploy to staging
+
+# This step sets STEP to 5
+# This step closes <details id=4> and opens <details id=5>
+
+# This will run after a successful run of the "Configure Azure environment" workflow on
+# the azure-configuration branch
+# Reference https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy to staging"]
+    types: [completed]
+    branches: [staging-test]
+
+permissions:
+  # Need `contents: read` to checkout the repository
+  # Need `contents: write` to update the step metadata
+  contents: write 
+
+jobs:
+  # The purpose of this job is to output the current step number 
+  # (retreived from the STEP file). This output variable can
+  # then be referenced in other jobs and used in conditional 
+  # expressions.
+  get_current_step:
+    name: Check current step number
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: get_step
+        run: echo "::set-output name=current_step::$(cat ./.github/script/STEP)"
+    outputs:
+      current_step: ${{ steps.get_step.outputs.current_step }}
+
+  on_azure_environment_created:
+    name: On Azure environment created
+    needs: get_current_step
+    runs-on: ubuntu-latest
+
+    # We will only run this action when:
+    # 1. This repository isn't the template repository
+    # 2. The STEP is currently 4 (see update-step.sh)
+    # 
+    # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
+    # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
+    if: ${{ github.repository_owner != 'TBD-organization'
+        && needs.get_current_step.outputs.current_step == 4 }}
+
+    steps:
+      # We'll need to check out the repository so that we can edit the README
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Let's get all the branches
+
+      # Merge the pull open pull request
+      - name: Merge Pull Request
+        run: gh pr merge --squash staging-test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Update README to close <details id=4>
+      # and open <details id=5>
+      # and set STEP to '5'
+      - name: Update to step 5
+        run: ./.github/script/update-step.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FROM_STEP: 4
+          TO_STEP: 5
+          BRANCH_NAME: staging-test
+
+      # Create branch and pull request to set up next step
+      - name: Create deploy-to-production-workflow branch and pull request 
+        run: .github/script/create-workflow-pr.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: deploy-to-production-workflow
+          WORKFLOW_FILE: deploy-prod.yml
+          REPO_OWNER: ${{ github.repository_owner }}

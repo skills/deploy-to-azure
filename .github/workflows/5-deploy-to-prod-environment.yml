@@ -1,16 +1,16 @@
-name: Step 5, Merge your pull request
+name: Check step 5, Test the deploy to staging workflow
 
 # This step triggers after a pull requst is merged to `main`
-# This step sets STEP to X
-# This step closes <details id=5> and opens <details id=X>
+# This step sets STEP to 6
 
 # This will run every time we create push a commit to `main`
 # Reference https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Deploy to production"]
+    types: [completed]
+    branches: [deploy-to-production-workflow]
 
 permissions:
   # Need `contents: read` to checkout the repository
@@ -18,16 +18,32 @@ permissions:
   contents: write
 
 jobs:
-  on_merge:
-    name: On merge
+  # The purpose of this job is to output the current step number 
+  # (retreived from the STEP file). This output variable can
+  # then be referenced in other jobs and used in conditional 
+  # expressions.
+  get_current_step:
+    name: Check current step number
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: get_step
+        run: echo "::set-output name=current_step::$(cat ./.github/script/STEP)"
+    outputs:
+      current_step: ${{ steps.get_step.outputs.current_step }}
+
+  on_deploy_to_prod:
+    name: On deploy to production
+    needs: get_current_step
 
     # We will only run this action when:
     # 1. This repository isn't the template repository
-    # 2. The STEP is currently 5 (see update-step.sh)
+    # 2. The STEP is currently 4 (see update-step.sh)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'githublearn' }}
-    # TBD replace `githublearn` with your organization name, if applicable
+    if: ${{ github.repository_owner != 'TBD-organization'
+        && needs.get_current_step.outputs.current_step == 5 }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows
     runs-on: ubuntu-latest
@@ -40,12 +56,11 @@ jobs:
           fetch-depth: 0 # Let's get all the branches
 
       # Update README to close <details id=5>
-      # and open <details id=X>
-      # and set STEP to 'X'
-      - name: Update to step X
+      # and open <details id=6>
+      # and set STEP to '6'
+      - name: Update to step 6
         run: ./.github/script/update-step.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FROM_STEP: 5
-          TO_STEP: X
-          BRANCH_NAME: TBD-branch-name
+          TO_STEP: 6

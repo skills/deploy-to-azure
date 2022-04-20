@@ -35,3 +35,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Build #
+#########
+node_modules/
+public/*.js

@@ -1,0 +1,50 @@
+#game { display: flex; }
+
+#tictactoe {
+  border-collapse: collapse;
+}
+
+#tictactoe td {
+  min-height: 100px;
+  min-width: 100px;
+  height: 100px;
+  width: 100px;
+  text-align: center;
+
+  font-size: 4em;
+  border: thin solid black;
+}
+
+#tictactoe td:hover {
+  background: #CCCCCC;
+}
+
+#tictactoe tr {
+  width: 300px;
+  height: 100px;
+}
+
+#score {
+  margin-left: 5%;
+}
+
+#score table {
+  border-collapse: collapse;
+}
+
+#score tr > * {
+  padding: 5px;
+  text-align: center;
+}
+
+#score th {
+  border-bottom: thin solid black;
+}
+
+#score h2 { margin-top: 0; }
+
+
+#app {
+  margin: auto;
+  width: 60%;
+}

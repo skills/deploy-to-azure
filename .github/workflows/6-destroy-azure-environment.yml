@@ -1,0 +1,65 @@
+name: Check step 7, Test the deploy to staging workflow
+
+# This step triggers after a pull requst is merged to `main`
+# This step sets STEP to 8
+# This step closes <details id=7> and opens <details id=8>
+
+# This will run every time we create push a commit to `main`
+# Reference https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+on: 
+  pull_request:
+    types: [labeled]
+
+permissions:
+  # Need `contents: read` to checkout the repository
+  # Need `contents: write` to update the step metadata
+  contents: write
+
+jobs:
+  # The purpose of this job is to output the current step number 
+  # (retreived from the STEP file). This output variable can
+  # then be referenced in other jobs and used in conditional 
+  # expressions.
+  get_current_step:
+    name: Check current step number
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: get_step
+        run: echo "::set-output name=current_step::$(cat ./.github/script/STEP)"
+    outputs:
+      current_step: ${{ steps.get_step.outputs.current_step }}
+
+  on_destroy_label:
+    name: On destroy label applied
+    needs: get_current_step
+
+    # We will only run this action when:
+    # 1. This repository isn't the template repository
+    # 2. The STEP is currently 4 (see update-step.sh)
+    # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
+    # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
+    if: ${{ github.repository_owner != 'TBD-organization'
+        && needs.get_current_step.outputs.current_step == 6
+        && contains(github.event.pull_request.labels.*.name, 'destroy environment') }}
+
+    # We'll run Ubuntu for performance instead of Mac or Windows
+    runs-on: ubuntu-latest
+
+    steps:
+      # We'll need to check out the repository so that we can edit the README
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Let's get all the branches
+
+      # Update README to close <details id=6>
+      # and open <details id=7>
+      # and set STEP to '7'
+      - name: Update to step 7
+        run: ./.github/script/update-step.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FROM_STEP: 6
+          TO_STEP: 7

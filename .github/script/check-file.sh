@@ -5,6 +5,7 @@
 # Make sure to escape your backslashes => \\ <= in YAML
 # So that its still a single \ in bash
 
+# Check if pattern match found in file
 grep_pattern() {
   echo
   echo "Check that $1 includes $2"
@@ -19,6 +20,7 @@ grep_pattern() {
   fi
 }
 
+# Run grep check for each term in list
 search_list() {
   for pattern in "$@"
   do
@@ -26,15 +28,14 @@ search_list() {
   done
 }
 
+# Handle single search term
 if [ -n "${SEARCH+set}" ] && [ -n "${FILE+set}" ]; then
   grep_pattern $FILE $SEARCH
+
+# Handle multiple search terms, space delimited 
 elif [ -n "${SEARCH_LIST+set}" ] && [ -n "${FILE+set}" ]; then
   search_list $SEARCH_LIST
+
 else
   echo "FILE and (SEARCH | SEARCH_LIST) required"
 fi
-
-
-
-
-
