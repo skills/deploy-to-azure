@@ -4,7 +4,7 @@
 
 _Create two deployment workflows using GitHub Actions and Microsoft Azure._
 
-<details id=0 open>
+<details id=0>
 <summary><strong>:golf: Start</strong></summary>
 
 **To start this course: [<img width="150" alt="Use this template" src="https://user-images.githubusercontent.com/1221423/148581131-555c0fb8-5361-4450-a760-75fa6219a2fc.png">](../../generate)**
@@ -20,7 +20,7 @@ _Create two deployment workflows using GitHub Actions and Microsoft Azure._
 
 </details>
 
-<details id=1>
+<details id=1 open>
 <summary><strong>:zap: Step 1: Trigger a job based on labels</strong></summary>
 
 ### Welcome to "GitHub Actions: Continuous Delivery with Azure"! :wave:
