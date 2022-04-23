@@ -72,11 +72,11 @@ jobs:
           TO_STEP: 5
           BRANCH_NAME: staging-test
 
-      # Create branch and pull request to set up next step
-      - name: Create deploy-to-production-workflow branch and pull request 
+      # Create pull request from production-deployment-workflow
+      # branch to set up next step
+      - name: Create production-deployment-workflow pull request 
         run: .github/script/create-workflow-pr.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BRANCH: deploy-to-production-workflow
-          WORKFLOW_FILE: deploy-prod.yml
-          REPO_OWNER: ${{ github.repository_owner }}
+

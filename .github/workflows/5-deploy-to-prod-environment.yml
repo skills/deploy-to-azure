@@ -10,7 +10,7 @@ on:
   workflow_run:
     workflows: ["Deploy to production"]
     types: [completed]
-    branches: [deploy-to-production-workflow]
+    branches: [production-deployment-workflow]
 
 permissions:
   # Need `contents: read` to checkout the repository

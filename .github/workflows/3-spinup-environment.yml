@@ -86,12 +86,9 @@ jobs:
           TO_STEP: 4
           BRANCH_NAME: azure-configuration
 
-      # Create branch and pull request to set up next step
-      - name: Create staging-test branch and pull request 
+      # Create pull request from staging-test to set up next step
+      - name: Create staging-test pull request 
         run: .github/script/create-workflow-pr.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BRANCH: staging-test
-          WORKFLOW_FILE: deploy-staging.yml
-          REPO_OWNER: ${{ github.repository_owner }}
-

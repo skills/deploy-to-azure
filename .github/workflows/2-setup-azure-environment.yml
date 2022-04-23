@@ -87,11 +87,9 @@ jobs:
           TO_STEP: 3
           BRANCH_NAME: staging-workflow
 
-      # Create branch and pull request to set up next step
-      - name: Create azure-configuration branch and pull request 
+      # Create pull request from azure-configuration branch to set up next step
+      - name: Create azure-configuration pull request 
         run: ./.github/script/create-workflow-pr.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BRANCH: azure-configuration
-          WORKFLOW_FILE: spinup-destroy.yml
-          REPO_OWNER: ${{ github.repository_owner }}

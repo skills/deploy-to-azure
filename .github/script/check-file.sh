@@ -36,6 +36,7 @@ if [ -n "${SEARCH+set}" ] && [ -n "${FILE+set}" ]; then
 elif [ -n "${SEARCH_LIST+set}" ] && [ -n "${FILE+set}" ]; then
   search_list $SEARCH_LIST
 
+# Missing FILE or search term(s)
 else
   echo "FILE and (SEARCH | SEARCH_LIST) required"
 fi

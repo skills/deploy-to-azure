@@ -29,7 +29,6 @@ _Create two deployment workflows using GitHub Actions and Microsoft Azure._
 
 >Continuous Delivery is a software development discipline where you build software in >such a way that the software can be released to production at any time.
 
-
 **What are _Job Conditionals_**: GitHub Actions features powerful controls for when to execute jobs and the steps within them. One of these controls is `if`, which allows you run a job only when a specific condition is met. See [`jobs.<job_id>.if` in _Workflow syntax for GitHub Actions_](https://help.github.com/en/github/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idif) for more information.
 
 **Setting up environments and kicking off deployments**
@@ -273,7 +272,8 @@ Personal access tokens (PATs) are an alternative to using passwords for authenti
 
 
 **Configuring your Azure environment**
-To deploy successfully to our Azure environment, we have automatically created a new workflow file `spinup-destroy.yml`. You can review this file in a new browser tab by clicking **Pull request** and viewing the open pull request.
+
+To deploy successfully to our Azure environment, we have created a new workflow file `spinup-destroy.yml` in the `azure-configuration` branch. Review this file in a new browser tab by clicking **Pull request** and viewing the open pull request.
 
 We will cover the key functionality below and then put the workflow to use by applying a label to the pull request.
 
@@ -302,6 +302,7 @@ The second job destroys Azure resources so that you do not use your free minutes
 
 ### :keyboard: Activity: Apply labels to create resources
 
+1. Edit the `spinup-destroy.yml` file in your open pull request and replace the `<username>` placeholder with your GitHub username. Commit this change directly to the `azure-configuration` branch.
 1. Apply the **spin up environment** label to your open pull request
 1. Wait for the GitHub Actions workflow to run and spin up your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
 1. Once the workflow succeeds, refresh this page for the next step.
@@ -315,8 +316,11 @@ The second job destroys Azure resources so that you do not use your free minutes
 
 Now that the proper configuration and workflow files are present, let's test our actions! In this step, there's a small change to the game. Once you add the appropriate label to your pull request, you should be able to see the deployment!
 
+We have created a new pull request from the `staging-test` branch which updates the `deploy-staging.yml` workflow file. Review this file in a new browser tab by clicking **Pull request** and viewing the open pull request.
+
 ### :keyboard: Activity: Add the proper label to your pull request
 
+1. Edit the `deploy-staging.yml` file in your open pull request and replace the `<username>` placeholder with your GitHub username. Commit this change directly to the `staging-test` branch.
 1. Apply the **stage** label to your open pull request
 1. Wait for the GitHub Actions workflow to run and deploy the application to your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
 
@@ -330,7 +334,7 @@ Now that the proper configuration and workflow files are present, let's test our
 
 ### Nicely done :partying_face:
 
-We have automatically created a new workflow file `deploy-prod.yml`. This new workflow deals specifically with commits to main and handles deployments to prod.
+We have created a workflow file `deploy-prod.yml` in the `production-deployment-workflow` branch. Review this file in a new browser tab by clicking **Pull request** and viewing the open pull request. This new workflow deals specifically with commits to main and handles deployments to prod.
 
 **Continuous delivery** (CD) is a concept that contains many behaviors and other, more specific concepts. One of those concepts is **test in production**. That can mean different things to different projects and different companies, and isn't a strict rule that says you are or aren't "doing CD".
 
@@ -448,7 +452,9 @@ Great! The syntax you used tells GitHub Actions to only run that workflow when a
 
 ### :keyboard: Activity: Merge your pull request
 1. You can now [merge](https://docs.github.com/en/get-started/quickstart/github-glossary#merge) your pull request!
-1. Click **Merge pull request**.
+1. Click **Merge pull request** and leave this tab open as we will be applying a label to the closed pull request in the next step.
+1. Now we just have to wait for the package to be published to GitHub Container Registry and the deployment to occur. When the workflow is finished running, refresh this page for the next step.
+
 
 </details>
 
@@ -456,14 +462,14 @@ Great! The syntax you used tells GitHub Actions to only run that workflow when a
 <summary><strong>:o: Step 6: Production deployment</strong></summary>
 
 ### Nice work!
-Great work, you've done it! We just have to wait for the deployment to occur, and for the package to be published to GitHub Container Registry. When it's completed, you should be able to see it in the **Packages** section of your repository. You can get the deployment URL in the Actions log, just like the staging URL.
+Great work, you've done it! You should be able to see your container image in the **Packages** section of your account and you can get the deployment URL in the Actions log, just like the staging URL.
 
 ### The cloud environment
 Throughout the course you've spun up resources that, if left unattended, could incur billing or consume your free minutes from the cloud provider. Once you have verified your application in production, let's tear down those environments so that you can keep your minutes for more learning!
 
 ### :keyboard: Activity: Destroy any running resources so you don't incur charges
 
-1. Apply the **destroy environment** label to merged `deploy-to-production-workflow` pull request.
+1. Apply the **destroy environment** label to your merged `deploy-to-production-workflow` pull request. If you have already closed the tab with your pull request, you can open it again by clicking **Pull requests** and then clicking the **Closed** filter to view merged pull requests.
 
   Now that you've applied the proper label, let's wait for the GitHub Actions workflow to complete. When it's finished, you can confirm that your environment has been destroyed by visiting your app's URL, or by logging into the Azure portal to see it is not running.
 
