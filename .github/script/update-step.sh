@@ -3,6 +3,7 @@
 # chmod a+x .github/script/update-step.sh
 
 echo "Check that we are on FROM_STEP"
+echo "Current STEP file value $(cat .github/script/STEP)"
 if [ "$(cat .github/script/STEP)" != $FROM_STEP ]
 then
   echo "Current step is not $FROM_STEP"
@@ -11,6 +12,7 @@ fi
 
 echo "Make sure we are on the main branch"
 git checkout main
+git pull origin main
 
 echo "Remove 'open' from any <details> tags"
 sed -r 's/<details id=([0-9]+) open>/<details id=\1>/g' README.md > tmp

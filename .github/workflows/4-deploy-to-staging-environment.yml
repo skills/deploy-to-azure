@@ -3,8 +3,8 @@ name: Check step 4, Deploy to staging
 # This step sets STEP to 5
 # This step closes <details id=4> and opens <details id=5>
 
-# This will run after a successful run of the "Configure Azure environment" workflow on
-# the azure-configuration branch
+# This will run after the "Configure Azure environment" workflow
+# completes on the azure-configuration branch
 # Reference https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
@@ -17,6 +17,7 @@ permissions:
   # Need `contents: read` to checkout the repository
   # Need `contents: write` to update the step metadata
   contents: write 
+  pull-requests: write
 
 jobs:
   # The purpose of this job is to output the current step number 
@@ -61,6 +62,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Create pull request from production-deployment-workflow
+      # branch to set up next step
+      - name: Create production-deployment-workflow pull request 
+        run: .github/script/create-workflow-pr.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: production-deployment-workflow
+          PR_TITLE: 'Added deploy-prod.yml workflow'
+
       # Update README to close <details id=4>
       # and open <details id=5>
       # and set STEP to '5'
@@ -71,12 +81,3 @@ jobs:
           FROM_STEP: 4
           TO_STEP: 5
           BRANCH_NAME: staging-test
-
-      # Create pull request from production-deployment-workflow
-      # branch to set up next step
-      - name: Create production-deployment-workflow pull request 
-        run: .github/script/create-workflow-pr.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_BRANCH: deploy-to-production-workflow
-

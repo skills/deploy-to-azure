@@ -9,6 +9,8 @@ _Create two deployment workflows using GitHub Actions and Microsoft Azure._
 
 **To start this course: [<img width="150" alt="Use this template" src="https://user-images.githubusercontent.com/1221423/148581131-555c0fb8-5361-4450-a760-75fa6219a2fc.png">](../../generate)**
 
+> You **must** check the **Include all branches** checkbox when creating your new respository from this template.
+
 > We recommend creating a public repository, as private repositories will [use Actions minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).<br>
 > After you make your own repository, wait about 20 seconds and refresh. I will go to the next step.
 
@@ -42,10 +44,17 @@ We'll use labels as triggers for multiple tasks:
 - When someone applies a "stage" label to a pull request, that'll be our indicator that we'd like to deploy our application to a staging environment.
 - When someone applies a "destroy environment" label to a pull request, we'll tear down any resources that are running on our Azure account.
 
+### :keyboard: Activity: Configure `GITHUB_TOKEN` permissions
+At the start of each workflow run, GitHub automatically creates a unique `GITHUB_TOKEN` secret to use in your workflow. We need to make sure this token has the permissions required for this course.
+
+1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
+1. Ensure that the `GITHUB_TOKEN` for this repository has **Allow GitHub Actions to create and approve pull requests** enabled under **Workflow permissions**. [Learn how](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This will allow GitHub Actions to merge pull requests as you move through the steps in this course.
+1. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
+
+
 ### :keyboard: Activity: Configure a trigger based on labels
 For now, we'll focus on staging. We'll spin up and destroy our environment in a later step.
 
-1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
 1. Go to the **Actions** tab.
 1. Click **New workflow**
 1. Search for "simple workflow" and click **Configure**
@@ -242,7 +251,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
             az logout
   ```
 
-1. Click **Start commit** and commit to this branch.
+1. Click **Start commit** and commit to the `staging-workflow` branch.
 1. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
@@ -302,7 +311,7 @@ The second job destroys Azure resources so that you do not use your free minutes
 
 ### :keyboard: Activity: Apply labels to create resources
 
-1. Edit the `spinup-destroy.yml` file in your open pull request and replace the `<username>` placeholder with your GitHub username. Commit this change directly to the `azure-configuration` branch.
+1. Edit the `spinup-destroy.yml` file in your open pull request and replace any `<username>` placeholders with your GitHub username. Commit this change directly to the `azure-configuration` branch.
 1. Apply the **spin up environment** label to your open pull request
 1. Wait for the GitHub Actions workflow to run and spin up your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
 1. Once the workflow succeeds, refresh this page for the next step.
@@ -316,11 +325,11 @@ The second job destroys Azure resources so that you do not use your free minutes
 
 Now that the proper configuration and workflow files are present, let's test our actions! In this step, there's a small change to the game. Once you add the appropriate label to your pull request, you should be able to see the deployment!
 
-We have created a new pull request from the `staging-test` branch which updates the `deploy-staging.yml` workflow file. Review this file in a new browser tab by clicking **Pull request** and viewing the open pull request.
+We have created a new pull request from the `staging-test` branch. The only purpose of this pull request is to be able to apply a label and see your application deployed to Azure.
 
 ### :keyboard: Activity: Add the proper label to your pull request
 
-1. Edit the `deploy-staging.yml` file in your open pull request and replace the `<username>` placeholder with your GitHub username. Commit this change directly to the `staging-test` branch.
+1. Ensure that the `GITHUB_TOKEN` for this repository has read and write permissions under **Workflow permissions**. [Learn more](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This is required for your workflow to be able to upload your image to the container registry.
 1. Apply the **stage** label to your open pull request
 1. Wait for the GitHub Actions workflow to run and deploy the application to your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
 
@@ -344,6 +353,7 @@ In our case, we can match our production environment to be exactly like our stag
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
 1. Open your `deploy-prod.yml` workflow for edit.
+1. Replace any `<username>` placeholders with your GitHub username
 1. Add a `push` trigger
 1. Add branches inside the push block
 1. Add `- main` inside the branches block
@@ -446,7 +456,7 @@ In our case, we can match our production environment to be exactly like our stag
             az logout
   ```
 
-1. Commit your changes to the `prod-deploy-workflow` branch.
+1. Commit your changes to the `production-deployment-workflow` branch.
 
 Great! The syntax you used tells GitHub Actions to only run that workflow when a commit is made to the main branch. Now we can put this workflow into action to deploy to production!
 
@@ -469,7 +479,7 @@ Throughout the course you've spun up resources that, if left unattended, could i
 
 ### :keyboard: Activity: Destroy any running resources so you don't incur charges
 
-1. Apply the **destroy environment** label to your merged `deploy-to-production-workflow` pull request. If you have already closed the tab with your pull request, you can open it again by clicking **Pull requests** and then clicking the **Closed** filter to view merged pull requests.
+1. Apply the **destroy environment** label to your merged `production-deployment-workflow` pull request. If you have already closed the tab with your pull request, you can open it again by clicking **Pull requests** and then clicking the **Closed** filter to view merged pull requests.
 
   Now that you've applied the proper label, let's wait for the GitHub Actions workflow to complete. When it's finished, you can confirm that your environment has been destroyed by visiting your app's URL, or by logging into the Azure portal to see it is not running.
 

@@ -3,7 +3,8 @@ name: Check step 3, Spin up environment
 # This step sets STEP to 4
 # This step closes <details id=3> and opens <details id=4>
 
-# This will run every time we create push to `spinup-destroy.yml` file the azure-configuration branch
+# This will run after the "Configure Azure environment" workflow
+# completes on the azure-configuration branch
 # Reference https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
@@ -16,6 +17,7 @@ permissions:
   # Need `contents: read` to checkout the repository
   # Need `contents: write` to update the step metadata
   contents: write
+  pull-requests: write
 
 jobs:
   # The purpose of this job is to output the current step number 
@@ -55,25 +57,19 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # Verify the learner configured setup-up-azure-resources job
-      - name: Verify setup-up-azure-resources job
-        run: .github/script/check-file.sh
-        env:
-          FILE: .github/workflows/spinup-destroy.yml
-          SEARCH_LIST: 'az\ group\ create az\ appservice\ plan\ create az\ webapp\ create az\ webapp\ config'
-
-       # Verify the learner configured destroy-azure-resources job
-      - name: Verifydestroy-azure-resources job
-        run: .github/script/check-file.sh
-        env:
-          FILE: .github/workflows/spinup-destroy.yml
-          SEARCH_LIST: 'az\ group\ delete'
-
       # Merge the pull open pull request
       - name: Merge Pull Request
         run: gh pr merge --squash azure-configuration
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create pull request from staging-test to set up next step
+      - name: Create staging-test pull request 
+        run: .github/script/create-workflow-pr.sh --pull-first
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: staging-test
+          PR_TITLE: 'Step 4, apply stage label'
 
       # Update README to close <details id=3>
       # and open <details id=4>
@@ -85,10 +81,3 @@ jobs:
           FROM_STEP: 3
           TO_STEP: 4
           BRANCH_NAME: azure-configuration
-
-      # Create pull request from staging-test to set up next step
-      - name: Create staging-test pull request 
-        run: .github/script/create-workflow-pr.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_BRANCH: staging-test

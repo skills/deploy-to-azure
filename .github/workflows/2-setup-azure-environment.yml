@@ -17,6 +17,7 @@ permissions:
   # Need `contents: read` to checkout the repository
   # Need `contents: write` to update the step metadata
   contents: write
+  pull-requests: write
 
 jobs:
   # The purpose of this job is to output the current step number 
@@ -72,9 +73,17 @@ jobs:
 
       # Merge the pull open pull request
       - name: Merge Pull Request
-        run: |
-          gh auth login
-          gh pr merge --squash staging-workflow
+        run: gh pr merge --squash staging-workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create pull request from azure-configuration branch to set up next step
+      - name: Create azure-configuration pull request 
+        run: ./.github/script/create-workflow-pr.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: azure-configuration
+          PR_TITLE: 'Added spinup-destroy.yml workflow'
 
       # Update README to close <details id=2>
       # and open <details id=3>
@@ -85,11 +94,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FROM_STEP: 2
           TO_STEP: 3
-          BRANCH_NAME: staging-workflow
-
-      # Create pull request from azure-configuration branch to set up next step
-      - name: Create azure-configuration pull request 
-        run: ./.github/script/create-workflow-pr.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_BRANCH: azure-configuration
