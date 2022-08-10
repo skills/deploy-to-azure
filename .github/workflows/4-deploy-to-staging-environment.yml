@@ -46,7 +46,7 @@ jobs:
     # 
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'TBD-organization'
+    if: ${{ !github.event.repository.is_template
         && needs.get_current_step.outputs.current_step == 4 }}
 
     steps:
