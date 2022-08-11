@@ -40,7 +40,7 @@ jobs:
     # 3. This is the first workflow run on the repository
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'InfomagnusOrg' 
+    if: ${{ !github.event.repository.is_template 
         && needs.get_current_step.outputs.current_step == 0
         && github.run_number == 1 }}
 
