@@ -44,8 +44,7 @@ jobs:
     # 2. The STEP is currently 1 (see update-step.sh)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'TBD-organization'
-        && needs.get_current_step.outputs.current_step == 1 }}
+    if: ${{ !github.event.repository.is_template && needs.get_current_step.outputs.current_step == 1 }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows
     runs-on: ubuntu-latest
