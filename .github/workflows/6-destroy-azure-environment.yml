@@ -1,7 +1,7 @@
 name: Check step 6, Production deployment cleanup
 
-# This step sets STEP to 7
-# This step closes <details id=6> and opens <details id=7>
+# This step sets STEP to X
+# This step closes <details id=6> and opens <details id=X>
 
 # This will run after the "Configure Azure environment" workflow
 # completes on the production-deployment-workflow branch
@@ -55,11 +55,11 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # Update README to close <details id=6> and open <details id=7>
-      # and set STEP to '7'
-      - name: Update to step 7
+      # Update README to close <details id=6> and open <details id=X>
+      # and set STEP to 'X'
+      - name: Update to step X
         uses: skills/action-update-step@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           from_step: 6
-          to_step: 7
+          to_step: X
