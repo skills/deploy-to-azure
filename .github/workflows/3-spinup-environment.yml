@@ -70,13 +70,12 @@ jobs:
           PR_BRANCH: staging-test
           PR_TITLE: 'Step 4, apply stage label'
 
-      # Update README to close <details id=3>
-      # and open <details id=4>
+      # Update README to close <details id=3> and open <details id=4>
       # and set STEP to '4'
       - name: Update to step 4
-        run: ./.github/script/update-step.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_STEP: 3
-          TO_STEP: 4
-          BRANCH_NAME: azure-configuration
+        uses: skills/action-update-step@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 3
+          to_step: 4
+          branch_name: azure-configuration

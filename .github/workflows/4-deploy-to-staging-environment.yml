@@ -70,13 +70,12 @@ jobs:
           PR_BRANCH: production-deployment-workflow
           PR_TITLE: 'Added deploy-prod.yml workflow'
 
-      # Update README to close <details id=4>
-      # and open <details id=5>
+      # Update README to close <details id=4> and open <details id=5>
       # and set STEP to '5'
       - name: Update to step 5
-        run: ./.github/script/update-step.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_STEP: 4
-          TO_STEP: 5
-          BRANCH_NAME: staging-test
+        uses: skills/action-update-step@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 4
+          to_step: 5
+          branch_name: staging-test

@@ -63,13 +63,12 @@ jobs:
           FILE: .github/workflows/deploy-staging.yml
           SEARCH: "github.event.pull_request.labels\\.\\*.name.*stage"
 
-      # Update README to close <details id=1>
-      # and open <details id=2>
+      # Update README to close <details id=1> and open <details id=2>
       # and set STEP to '2'
       - name: Update to step 2
-        run: ./.github/script/update-step.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_STEP: 1
-          TO_STEP: 2
-          BRANCH_NAME: staging-workflow
+        uses: skills/action-update-step@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 1
+          to_step: 2
+          branch_name: staging-workflow

@@ -55,12 +55,11 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # Update README to close <details id=6>
-      # and open <details id=7>
+      # Update README to close <details id=6> and open <details id=7>
       # and set STEP to '7'
       - name: Update to step 7
-        run: ./.github/script/update-step.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_STEP: 6
-          TO_STEP: 7
+        uses: skills/action-update-step@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 6
+          to_step: 7
