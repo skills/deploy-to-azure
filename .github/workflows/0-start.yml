@@ -36,13 +36,10 @@ jobs:
 
     # We will only run this action when:
     # 1. This repository isn't the template repository
-    # 2. The STEP is currently '0' (see update-step.sh)
-    # 3. This is the first workflow run on the repository
+    # 2. The STEP is currently 0 (see update-step.sh)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
-    if: ${{ github.repository_owner != 'InfomagnusOrg' 
-        && needs.get_current_step.outputs.current_step == 0
-        && github.run_number == 1 }}
+    if: ${{ !github.event.repository.is_template && needs.get_current_step.outputs.current_step == 0 }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows
     runs-on: ubuntu-latest
@@ -54,7 +51,7 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # Update README to close <details id=0>
+      # Update README to comment out step0
       # and open <details id=1>
       # and set STEP to '1'
       - name: Update to step 1

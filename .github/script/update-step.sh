@@ -22,6 +22,14 @@ echo "Add 'open' to step TO_STEP"
 sed -r "s/<details id=$TO_STEP>/<details id=$TO_STEP open>/g" README.md > tmp
 mv tmp README.md
 
+echo "Update all HTML comments to hide everything"
+sed -i.tmp -r 's/<!--step([0-9X]+)-->/<!--step\1/g' README.md
+sed -i.tmp -r 's/<!--endstep([0-9X]+)-->/endstep\1-->/g' README.md
+
+echo "Show the current TO_STEP"
+sed -i.tmp -r "s/<\!--step$TO_STEP/<\!--step$TO_STEP-->/g" README.md
+sed -i.tmp -r "s/endstep$TO_STEP-->/<\!--endstep$TO_STEP-->/g" README.md
+
 echo "Update the STEP file to TO_STEP"
 echo "$TO_STEP" > .github/script/STEP
 
