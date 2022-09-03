@@ -40,3 +40,4 @@ Thumbs.db
 #########
 node_modules/
 public/*.js
+.vscode/settings.json
