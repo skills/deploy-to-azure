@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   # The purpose of this job is to output the current step number 
-  # (retreived from the STEP file). This output variable can
+  # (retrieved from the STEP file). This output variable can
   # then be referenced in other jobs and used in conditional 
   # expressions.
   get_current_step:
@@ -41,7 +41,7 @@ jobs:
 
     # We will only run this action when:
     # 1. This repository isn't the template repository
-    # 2. The STEP is currently 3 (see update-step.sh)
+    # 2. The STEP is currently 3 (see skills/action-update-step)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
     if: ${{ !github.event.repository.is_template && needs.get_current_step.outputs.current_step == 3 }}
@@ -70,13 +70,12 @@ jobs:
           PR_BRANCH: staging-test
           PR_TITLE: 'Step 4, apply stage label'
 
-      # Update README to close <details id=3>
-      # and open <details id=4>
+      # Update README to close <details id=3> and open <details id=4>
       # and set STEP to '4'
       - name: Update to step 4
-        run: ./.github/script/update-step.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_STEP: 3
-          TO_STEP: 4
-          BRANCH_NAME: azure-configuration
+        uses: skills/action-update-step@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 3
+          to_step: 4
+          branch_name: azure-configuration

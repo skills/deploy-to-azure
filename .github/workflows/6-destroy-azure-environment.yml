@@ -1,7 +1,7 @@
 name: Check step 6, Production deployment cleanup
 
-# This step sets STEP to 7
-# This step closes <details id=6> and opens <details id=7>
+# This step sets STEP to X
+# This step closes <details id=6> and opens <details id=X>
 
 # This will run after the "Configure Azure environment" workflow
 # completes on the production-deployment-workflow branch
@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   # The purpose of this job is to output the current step number 
-  # (retreived from the STEP file). This output variable can
+  # (retrieved from the STEP file). This output variable can
   # then be referenced in other jobs and used in conditional 
   # expressions.
   get_current_step:
@@ -40,7 +40,7 @@ jobs:
 
     # We will only run this action when:
     # 1. This repository isn't the template repository
-    # 2. The STEP is currently 6 (see update-step.sh)
+    # 2. The STEP is currently 6 (see skills/action-update-step)
     # Reference https://docs.github.com/en/actions/learn-github-actions/contexts
     # Reference https://docs.github.com/en/actions/learn-github-actions/expressions
     if: ${{ !github.event.repository.is_template && needs.get_current_step.outputs.current_step == 6 }}
@@ -55,12 +55,11 @@ jobs:
         with:
           fetch-depth: 0 # Let's get all the branches
 
-      # Update README to close <details id=6>
-      # and open <details id=7>
-      # and set STEP to '7'
-      - name: Update to step 7
-        run: ./.github/script/update-step.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_STEP: 6
-          TO_STEP: 7
+      # Update README to close <details id=6> and open <details id=X>
+      # and set STEP to 'X'
+      - name: Update to step X
+        uses: skills/action-update-step@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          from_step: 6
+          to_step: X

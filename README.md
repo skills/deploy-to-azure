@@ -505,7 +505,7 @@ Throughout the course you've spun up resources that, if left unattended, could i
   Review what we learned, ask for feedback, provide next steps.
 -->
 
-<details id=7>
+<details id=X>
 <summary><h2>Finish</h2></summary>
 
 ### Congratulations, you've completed this course!
