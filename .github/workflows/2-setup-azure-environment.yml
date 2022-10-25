@@ -80,6 +80,7 @@ jobs:
       - name: Create azure-configuration branch
         run: ./.github/script/create-workflow.sh
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: azure-configuration
           WORKFLOW_PATH: .github/example-workflows/spinup-destroy.yml
 
