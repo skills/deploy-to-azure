@@ -16,27 +16,28 @@
   Do not use quotes on the <details> tag attributes.
 -->
 
-<!--step0-->
+<details id=0 open>
+<summary><h2>Welcome</h2></summary>
 
-Create two deployment workflows using GitHub Actions and Microsoft Azure.
+TBD-welcome-paragraph
 
-- **Who is this for**: Developers, DevOps Engineers, new GitHub users, students, and teams.
-- **What you'll learn**: We'll learn how to create a workflow that enables Continuous Delivery using GitHub Actions and Microsoft Azure.
-- **What you'll build**: We will create two deployment workflows - the first workflow to deploy to staging based on a label and the second workflow to deploy to production based on merging to main.
-- **Prerequisites**: Before you start, you should be familiar with GitHub, GitHub Actions, and Continuous Integration with GitHub Actions. 
-- **How long**: This course is 6 steps long and takes less than 2 hours to complete.
+- **Who is this for**: TBD-audience.
+- **What you'll learn**: TBD-objective.
+- **What you'll build**: TBD-result.
+- **Prerequisites**: TBD-prerequisites.
+- **How long**: This course is TBD-step-count steps long and takes less than TBD-duration to complete.
 
 ## How to start this course
 
-1. Above these instructions, right-click **Use this template** and open the link in a new tab.
-   ![Use this template](https://user-images.githubusercontent.com/1221423/169618716-fb17528d-f332-4fc5-a11a-eaa23562665e.png)
+1. Right-click **Start course** and open the link in a new tab.
+   <br />[![start-course](https://user-images.githubusercontent.com/1221423/218596841-0645fe1a-4aaf-4f51-9ab3-8aa2d3fdd487.svg)](/TBD-generate)
 2. In the new tab, follow the prompts to create a new repository.
-   - For owner, choose your personal account or an organization to host the repository. 
+   - For owner, choose your personal account or an organization to host the repository.
    - We recommend creating a public repository—private repositories will [use Actions minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).
-   ![Create a new repository](https://user-images.githubusercontent.com/1221423/169618722-406dc508-add4-4074-83f0-c7a7ad87f6f3.png)
+   ![Create a new repository](https://user-images.githubusercontent.com/1221423/218594143-e60462b6-9f2a-4fa3-80de-063ac5429aab.png)
 3. After your new repository is created, wait about 20 seconds, then refresh the page. Follow the step-by-step instructions in the new repository's README.
 
-<!--endstep0-->
+</details>
 
 <details id=1>
 <summary><h2>Step 1: Trigger a job based on labels</h2></summary>
