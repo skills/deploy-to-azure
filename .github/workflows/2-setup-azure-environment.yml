@@ -77,14 +77,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Create pull request from azure-configuration branch to set up next step
-      - name: Create azure-configuration pull request 
-        run: ./.github/script/create-workflow-pr.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_BRANCH: azure-configuration
-          PR_TITLE: 'Added spinup-destroy.yml workflow'
-
       # Update README to close <details id=2> and open <details id=3>
       # and set STEP to '3'
       - name: Update to step 3
