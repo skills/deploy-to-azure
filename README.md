@@ -614,7 +614,7 @@ Here's a recap of all the tasks you've accomplished in your repository:
 
 ### What's next?
 
-- [We'd love to hear what you thought of this course](TBD-feedback-link).
+- [We'd love to hear what you thought of this course](https://github.com/skills/.github/discussions).
 - [Take another GitHub Skills Course](https://github.com/skills).
 - [Read the GitHub Getting Started docs](https://docs.github.com/en/get-started).
 - To find projects to contribute to, check out [GitHub Explore](https://github.com/explore).
