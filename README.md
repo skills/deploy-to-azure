@@ -16,7 +16,7 @@
   Do not use quotes on the <details> tag attributes.
 -->
 
-<details id=0 open>
+<details id=0>
 <summary><h2>Welcome</h2></summary>
 
 Create two deployment workflows using GitHub Actions and Microsoft Azure.
@@ -167,6 +167,149 @@ We won't be going into detail on the steps of this workflow, but it would be a g
   <summary> If you'd like to copy the full workflow file, it should look like this: </summary>
 
   ```yaml
+  name: Deploy to staging
+
+  on:
+    pull_request:
+      types: [labeled]
+
+  env:
+    IMAGE_REGISTRY_URL: ghcr.io
+    ###############################################
+    ### Replace <username> with GitHub username ###
+    ###############################################
+    DOCKER_IMAGE_NAME: <username>-azure-ttt
+    AZURE_WEBAPP_NAME: <username>-ttt-app
+    ###############################################
+
+  jobs:
+    build:
+      if: contains(github.event.pull_request.labels.*.name, 'stage')
+
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v3
+        - name: npm install and build webpack
+          run: |
+            npm install
+            npm run build
+        - uses: actions/upload-artifact@v3
+          with:
+            name: webpack artifacts
+            path: public/
+
+    Build-Docker-Image:
+      runs-on: ubuntu-latest
+      needs: build
+      name: Build image and store in GitHub Container Registry
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Download built artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: webpack artifacts
+            path: public
+
+        - name: Log in to GHCR
+          uses: docker/login-action@v2
+          with:
+            registry: ${{ env.IMAGE_REGISTRY_URL }}
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Extract metadata (tags, labels) for Docker
+          id: meta
+          uses: docker/metadata-action@v4
+          with:
+            images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
+            tags: |
+              type=sha,format=long,prefix=
+
+        - name: Build and push Docker image
+          uses: docker/build-push-action@v3
+          with:
+            context: .
+            push: true
+            tags: ${{ steps.meta.outputs.tags }}
+            labels: ${{ steps.meta.outputs.labels }}
+
+    Deploy-to-Azure:
+      runs-on: ubuntu-latest
+      needs: Build-Docker-Image
+      name: Deploy app container to Azure
+      steps:
+        - name: "Login via Azure CLI"
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        - uses: azure/docker-login@v1
+          with:
+            login-server: ${{env.IMAGE_REGISTRY_URL}}
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Deploy web app container
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: ${{env.AZURE_WEBAPP_NAME}}
+            images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
+
+        - name: Azure logout via Azure CLI
+          uses: azure/CLI@v1
+          with:
+            inlineScript: |
+              az logout
+              az cache purge
+              az account clear
+  ```
+  </details>
+
+1. Click **Start commit** and commit to the `staging-workflow` branch.
+
+> **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
+
+</details>
+
+
+<details id=3>
+<summary><h2>Step 3: Spin up an environment based on labels</h2></summary>
+
+### Nicely done! 
+
+GitHub Actions is cloud agnostic, so any cloud will work. We'll show how to deploy to Azure in this course.
+
+**What are _Azure resources_?** In Azure, a resource is an entity managed by Azure. We'll use the following Azure resources in this course:
+- A [web app](https://docs.microsoft.com/en-us/azure/app-service/overview) is how we'll be deploying our application to Azure.
+- A [resource group](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview#resource-groups) is a collection of resources, like web apps and virtual machines (VMs).
+- An [App Service plan](https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans) is what runs our web app and manages the billing (our app should run for free).
+
+Through the power of GitHub Actions, we can create, configure, and destroy these resources through our workflow files.
+
+### Activity 1: Set up a personal access token (PAT)
+Personal access tokens (PATs) are an alternative to using passwords for authentication to GitHub. We will use a PAT to allow your web app to pull the container image after your workflow pushes a newly built image to the registry.
+
+1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
+2. Create a personal access token with the `repo`, and `read:packages` scopes. For more information, see ["Creating a personal access token."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+3. Once you have generated the token we will need to store it in a secret so that it can be used within a workflow. Create a new repository secret named `CR_PAT` and paste the PAT token in as the value.
+4. With this done we can move on to setting up our workflow.
+
+
+**Configuring your Azure environment**
+
+To deploy successfully to our Azure environment:
+
+1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab of your repository page. 
+
+2. Once you're in the new `azure-configuration` branch go into the `.github/workflow` directory and create a new file called `spinup-destroy.yml`. 
+
+  <details>
+  <summary>Copy and paste the following into this new file:</summary>
+
+  ```yaml
   name: Configure Azure environment
 
   on:
@@ -245,125 +388,11 @@ We won't be going into detail on the steps of this workflow, but it would be a g
   ```
   </details>
 
-16. Click **Start commit** and commit to the `staging-workflow` branch.
+3. Click `Commit directly to the azure-configuration branch.` and go to the Pull requests tab of the repository. 
 
-> **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
+4. Compare between the `main` and `azure-configuration` branches respectively and click `Create pull request`. 
 
-</details>
-
-
-<details id=3>
-<summary><h2>Step 3: Spin up an environment based on labels</h2></summary>
-
-### Nicely done! 
-
-GitHub Actions is cloud agnostic, so any cloud will work. We'll show how to deploy to Azure in this course.
-
-**What are _Azure resources_?** In Azure, a resource is an entity managed by Azure. We'll use the following Azure resources in this course:
-- A [web app](https://docs.microsoft.com/en-us/azure/app-service/overview) is how we'll be deploying our application to Azure.
-- A [resource group](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview#resource-groups) is a collection of resources, like web apps and virtual machines (VMs).
-- An [App Service plan](https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans) is what runs our web app and manages the billing (our app should run for free).
-
-Through the power of GitHub Actions, we can create, configure, and destroy these resources through our workflow files.
-
-### Activity 1: Set up a personal access token (PAT)
-Personal access tokens (PATs) are an alternative to using passwords for authentication to GitHub. We will use a PAT to allow your web app to pull the container image after your workflow pushes a newly built image to the registry.
-
-1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-2. Create a personal access token with the `repo` and `read:packages` scopes. For more information, see ["Creating a personal access token."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-3. Once you have generated the token we will need to store it in a secret so that it can be used within a workflow. Create a new repository secret named `CR_PAT` and paste the PAT token in as the value.
-4. With this done we can move on to setting up our workflow.
-
-
-**Configuring your Azure environment**
-
-To deploy successfully to our Azure environment, first create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab of your repository page. 
-
-Second, once you're in the new `azure-configuration` branch go into the `.github/workflow` directory and create a new file called `spinup-destroy.yml`. 
-
-  <details>
-  <summary>Copy and paste the following into this new file:</summary>
-
-  ```yaml
-  name: Configure Azure environment
-
-  on:
-    pull_request:
-      types: [labeled]
-
-  env:
-    IMAGE_REGISTRY_URL: ghcr.io
-    AZURE_RESOURCE_GROUP: cd-with-actions
-    AZURE_APP_PLAN: actions-ttt-deployment
-    AZURE_LOCATION: '"Central US"'
-    ###############################################
-    ### Replace <username> with GitHub username ###
-    ###############################################
-    AZURE_WEBAPP_NAME: <username>-ttt-app
-
-  jobs:
-    setup-up-azure-resources:
-      runs-on: ubuntu-latest
-        if: contains(github.event.pull_request.labels.*.name, 'spin up environment')
-          steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Azure login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Create Azure resource group
-        if: success()
-        run: |
-          az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
-
-      - name: Create Azure app service plan
-        if: success()
-              run: |
-          az appservice plan create --resource-group ${{env.AZURE_RESOURCE_GROUP}} --name ${{env.AZURE_APP_PLAN}} --is-linux --sku F1 --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
-
-      - name: Create webapp resource
-        if: success()
-        run: |
-          az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }}  --deployment-container-image-name nginx --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
-
-      - name: Configure webapp to use GHCR
-        if: success()
-        run: |
-          az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.CR_PAT}} --docker-registry-server-url https://${{env.IMAGE_REGISTRY_URL}} --docker-registry-server-user ${{github.actor}} --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
-
-    destroy-azure-resources:
-      runs-on: ubuntu-latest
-
-      if: contains(github.event.pull_request.labels.*.name, 'destroy environment')
-
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
-
-        - name: Azure login
-          uses: azure/login@v1
-          with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-        - name: Destroy Azure environment
-          if: success()
-          run: |
-      az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
-
-        - name: Azure logout via Azure CLI
-          uses: azure/CLI@v1
-          with:
-      inlineScript: |
-        az logout
-        az cache purge
-        az account clear
-  ```
-  </details>
-
-Click `Commit directly to the azure-configuration branch.` and go to the Pull request tab of the repository. There will be a yellow banner referring to the `azure-configuration` branch, please click `Compare & pull request`. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`. 
+5. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`. 
 
 We will cover the key functionality below and then put the workflow to use by applying a label to the pull request.
 
@@ -406,7 +435,9 @@ The second job destroys Azure resources so that you do not use your free minutes
 
 Now that the proper configuration and workflow files are present, let's test our actions! In this step, there's a small change to the game. Once you add the appropriate label to your pull request, you should be able to see the deployment!
 
-We have created a new pull request from the `staging-test` branch. The only purpose of this pull request is to be able to apply a label and see your application deployed to Azure.
+Now, let's create a new branch named `staging-test` from `main` using the same steps as you did for the previous `azure-configuration` branch. 
+
+Edit the `.github/workflows/deploy-staging.yml` file and replace the evey `<username>` with your GitHub username. After you commit that change to the new `staging-test` branch, go to the Pull requests tab and there should be a yellow banner to `Compare & pull request`. Once the pull request is opened up, click `Create pull request`. 
 
 ### Activity 1: Add the proper label to your pull request
 
@@ -424,7 +455,7 @@ We have created a new pull request from the `staging-test` branch. The only purp
 
 ### Nicely done
 
-We have created a workflow file `deploy-prod.yml` in the `production-deployment-workflow` branch. Review this file in a new browser tab by clicking **Pull request** and viewing the open pull request. This new workflow deals specifically with commits to main and handles deployments to prod.
+As we've done before, create a new branch called `production-deployment-workflow` fom `main`. In the `.github/workflows` directory add a new file called `deploy-prod.yml`. This new workflow deals specifically with commits to `main` and handles deployments to `prod`.
 
 **Continuous delivery** (CD) is a concept that contains many behaviors and other, more specific concepts. One of those concepts is **test in production**. That can mean different things to different projects and different companies, and isn't a strict rule that says you are or aren't "doing CD".
 
@@ -432,14 +463,7 @@ In our case, we can match our production environment to be exactly like our stag
 
 ### Activity 1: Add triggers to production deployment workflow
 
-1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-1. Open your `deploy-prod.yml` workflow for edit.
-1. Replace any `<username>` placeholders with your GitHub username
-1. Add a `push` trigger
-1. Add branches inside the push block
-1. Add `- main` inside the branches block
-
-  It should look like the file below when you are finished. Note that not much has changed from our staging workflow, except for our trigger, and that we won't be filtering by labels.
+Copy and paste the following to your file, and replace any `<username>` placeholders with your GitHub username. Note that not much has changed from our staging workflow, except for our trigger, and that we won't be filtering by labels.
 
   ```yaml
   name: Production deployment
@@ -609,4 +633,3 @@ Here's a recap of all the tasks you've accomplished in your repository:
 Get help: [Post in our discussion board](https://github.com/skills/.github/discussions) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
 
 &copy; 2022 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [CC-BY-4.0 License](https://creativecommons.org/licenses/by/4.0/legalcode)
-
