@@ -62,6 +62,12 @@ jobs:
         run: gh pr merge --squash azure-configuration
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Pull main
+      - name: Pull main
+        run: ./.github/script/pull-main.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Update README to close <details id=3> and open <details id=4>
       # and set STEP to '4'

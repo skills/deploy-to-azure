@@ -77,6 +77,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Pull main
+      - name: Pull main
+        run: ./.github/script/pull-main.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Update README to close <details id=2> and open <details id=3>
       # and set STEP to '3'
       - name: Update to step 3
