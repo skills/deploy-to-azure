@@ -57,7 +57,7 @@ We'll use labels as triggers for multiple tasks:
 At the start of each workflow run, GitHub automatically creates a unique `GITHUB_TOKEN` secret to use in your workflow. We need to make sure this token has the permissions required for this course.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-1. Ensure that the `GITHUB_TOKEN` for this repository has **Allow GitHub Actions to create and approve pull requests** enabled under **Workflow permissions**. [Learn how](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This will allow GitHub Actions to merge pull requests as you move through the steps in this course.
+1. Go to Settings > Actions > General. Ensure that the `GITHUB_TOKEN` for this repository has **Allow GitHub Actions to create and approve pull requests** enabled under **Workflow permissions**. [Learn how](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This will allow GitHub Actions to merge pull requests as you move through the steps in this course.
 1. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
 
 
@@ -154,14 +154,14 @@ We won't be going into detail on the steps of this workflow, but it would be a g
       (...)
     }
     ```
-8. Back on GitHub, click on this repository's **Secrets** in the Settings tab.
-9. Click **New secret**
+8. Back on GitHub, click on this repository's **Secrets and variables > Actions** in the Settings tab.
+9. Click **New repository secret**
 10. Name your new secret **AZURE_SUBSCRIPTION_ID** and paste the value from the `id:` field in the first command.
 11. Click **Add secret**.
-12. Click **New secret** again.
+12. Click **New repository secret** again.
 13. Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
 14. Click **Add secret**
-15. Back in your pull request, edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
+15. Go back to the Pull requests tab and in your pull request, edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
 
   <details>
   <summary> If you'd like to copy the full workflow file, it should look like this: </summary>
@@ -268,7 +268,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
   ```
   </details>
 
-16. Click **Start commit** and commit to the `staging-workflow` branch.
+16. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
 
 > **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
 
@@ -303,7 +303,7 @@ Personal access tokens (PATs) are an alternative to using passwords for authenti
 To deploy successfully to our Azure environment:
 
 1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab on your repository page. 
-2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml`. 
+2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml` by clicking **Add file**. 
 
   <details>
   <summary>Copy and paste the following into this new file:</summary>
@@ -387,9 +387,10 @@ To deploy successfully to our Azure environment:
   ```
   </details>
 
-3. Click `Commit directly to the azure-configuration branch.` and go to the Pull requests tab of the repository. 
-4. Compare between the `main` and `azure-configuration` branches, respectively, and click `Create pull request`. 
-5. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`. 
+3. Click **Commit changes...** and select `Commit directly to the azure-configuration branch.` before clicking **Commit changes**. 
+4. Go to the Pull requests tab of the repository. 
+5. There should be a yellow banner with the `azure-configuration` branch where you can click **Compare & pull request**. 
+6. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`. 
 
 We will cover the key functionality below and then put the workflow to use by applying a label to the pull request.
 
@@ -419,7 +420,7 @@ The second job destroys Azure resources so that you do not use your free minutes
 ### Activity 2: Apply labels to create resources
 
 1. Edit the `spinup-destroy.yml` file in your open pull request and replace any `<username>` placeholders with your GitHub username. Commit this change directly to the `azure-configuration` branch.
-1. Apply the **spin up environment** label to your open pull request
+1. Back in the Pull request, apply the **spin up environment** label to your open pull request
 1. Wait for the GitHub Actions workflow to run and spin up your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
 1. Once the workflow succeeds, refresh this page for the next step.
 
@@ -435,15 +436,13 @@ Now that the proper configuration and workflow files are present, let's test our
 1. Create a new branch named `staging-test` from `main` using the same steps as you did for the previous `azure-configuration` branch. 
 1. Edit the `.github/workflows/deploy-staging.yml` file, and replace every `<username>` with your GitHub username. 
 1. Commit that change to the new `staging-test` branch.
-1. Go to the Pull requests tab and there should be a yellow banner to `Compare & pull request`. Once the pull request is opened up, click `Create pull request`. 
+1. Go to the Pull requests tab and there should be a yellow banner with the `staging-test` branch to `Compare & pull request`. Once the pull request is opened up, click `Create pull request`. 
 
 ### Activity 1: Add the proper label to your pull request
 
 1. Ensure that the `GITHUB_TOKEN` for this repository has read and write permissions under **Workflow permissions**. [Learn more](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This is required for your workflow to be able to upload your image to the container registry.
 1. Apply the **stage** label to your open pull request
-1. Wait for the GitHub Actions workflow to run and deploy the application to your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
-
-  The deployment may take a few moments but you've done the right thing. Once the deployment is successful, you'll see green check marks for each run, and you'll see a URL for your deployment.
+1. Wait for the GitHub Actions workflow to run and deploy the application to your Azure environment. You can follow along in the Actions tab or in the pull request merge box. The deployment may take a few moments but you've done the right thing. Once the deployment is successful, you'll see green check marks for each run, and you'll see a URL for your deployment. Play the game! 
 1. Once the workflow has completed, refresh this page for the next step.
 
 </details>
@@ -562,8 +561,9 @@ Copy and paste the following to your file, and replace any `<username>` placehol
               az cache purge
               az account clear
   ```
-
+1. Update `<username>` to your GitHub username. 
 1. Commit your changes to the `production-deployment-workflow` branch.
+1. Go to the Pull requests tab and click **Compare & pull request** for the `production-deployment-workflow` branch and create a Pull request.
 
 Great! The syntax you used tells GitHub Actions to only run that workflow when a commit is made to the main branch. Now we can put this workflow into action to deploy to production!
 
