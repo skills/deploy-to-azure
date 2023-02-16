@@ -461,7 +461,7 @@ In our case, we can match our production environment to be exactly like our stag
 Copy and paste the following to your file, and replace any `<username>` placeholders with your GitHub username. Note that not much has changed from our staging workflow, except for our trigger, and that we won't be filtering by labels.
 
   ```yaml
-  name: Production deployment
+  name: Deploy to production
 
   on:
     push:
@@ -559,7 +559,7 @@ Copy and paste the following to your file, and replace any `<username>` placehol
               az cache purge
               az account clear
   ```
-1. Update `<username>` to your GitHub username. 
+1. Update every `<username>` to your GitHub username. 
 1. Commit your changes to the `production-deployment-workflow` branch.
 1. Go to the Pull requests tab and click **Compare & pull request** for the `production-deployment-workflow` branch and create a Pull request.
 
@@ -577,18 +577,18 @@ Great! The syntax you used tells GitHub Actions to only run that workflow when a
 <summary><h2>Step 6: Production deployment</h2></summary>
 
 ### Nice work!
-Great work, you've done it! You should be able to see your container image in the **Packages** section of your account and you can get the deployment URL in the Actions log, just like the staging URL.
+Great work, you've done it! You should be able to see your container image in the **Packages** section of your account on the main repository page. You can get the deployment URL in the Actions log, just like the staging URL.
 
 ### The cloud environment
 Throughout the course you've spun up resources that, if left unattended, could incur billing or consume your free minutes from the cloud provider. Once you have verified your application in production, let's tear down those environments so that you can keep your minutes for more learning!
 
 ### Activity 1: Destroy any running resources so you don't incur charges
 
-1. Apply the **destroy environment** label to your merged `production-deployment-workflow` pull request. If you have already closed the tab with your pull request, you can open it again by clicking **Pull requests** and then clicking the **Closed** filter to view merged pull requests.
+1. Create and apply the `destroy environment` label to your merged `production-deployment-workflow` pull request. If you have already closed the tab with your pull request, you can open it again by clicking **Pull requests** and then clicking the **Closed** filter to view merged pull requests.
 
   Now that you've applied the proper label, let's wait for the GitHub Actions workflow to complete. When it's finished, you can confirm that your environment has been destroyed by visiting your app's URL, or by logging into the Azure portal to see it is not running.
 
-1. Wait about 20 seconds then refresh this page for the next step.
+2. Wait about 20 seconds then refresh this page for the next step.
 
 </details>
 
