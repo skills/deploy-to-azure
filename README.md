@@ -418,7 +418,7 @@ The second job destroys Azure resources so that you do not use your free minutes
 ### Activity 2: Apply labels to create resources
 
 1. Edit the `spinup-destroy.yml` file in your open pull request and replace any `<username>` placeholders with your GitHub username. Commit this change directly to the `azure-configuration` branch.
-1. Back in the Pull request, apply the **spin up environment** label to your open pull request
+1. Back in the Pull request, create and apply the `spin up environment` label to your open pull request
 1. Wait for the GitHub Actions workflow to run and spin up your Azure environment. You can follow along in the Actions tab or in the pull request merge box.
 1. Once the workflow succeeds, refresh this page for the next step.
 
@@ -439,7 +439,7 @@ Now that the proper configuration and workflow files are present, let's test our
 ### Activity 1: Add the proper label to your pull request
 
 1. Ensure that the `GITHUB_TOKEN` for this repository has read and write permissions under **Workflow permissions**. [Learn more](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This is required for your workflow to be able to upload your image to the container registry.
-1. Apply the **stage** label to your open pull request
+1. Create and apply the `stage` label to your open pull request
 1. Wait for the GitHub Actions workflow to run and deploy the application to your Azure environment. You can follow along in the Actions tab or in the pull request merge box. The deployment may take a few moments but you've done the right thing. Once the deployment is successful, you'll see green check marks for each run, and you'll see a URL for your deployment. Play the game! 
 1. Once the workflow has completed, refresh this page for the next step.
 
