@@ -144,7 +144,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
     # Replace {subscription-id} with the same id stored in AZURE_SUBSCRIPTION_ID.
     ``` 
 > **Note**: The `\` character works as a line break on Unix based systems.  If you are on a Windows based system the `\` character will cause this command to fail.  Place this command on a single line if you are using Windows.**                                                    
-1. Copy the entire contents of the command's response, we'll call this `AZURE_CREDENTIALS`. Here's an example of what it looks like:
+7. Copy the entire contents of the command's response, we'll call this `AZURE_CREDENTIALS`. Here's an example of what it looks like:
     ```shell
     {
       "clientId": "<GUID>",
@@ -154,14 +154,14 @@ We won't be going into detail on the steps of this workflow, but it would be a g
       (...)
     }
     ```
-1. Back on GitHub, click on this repository's **Secrets** in the Settings tab.
-1. Click **New secret**
-1. Name your new secret **AZURE_SUBSCRIPTION_ID** and paste the value from the `id:` field in the first command.
-1. Click **Add secret**.
-1. Click **New secret** again.
-1. Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
-1. Click **Add secret**
-1. Back in your pull request, edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
+8. Back on GitHub, click on this repository's **Secrets** in the Settings tab.
+9. Click **New secret**
+10. Name your new secret **AZURE_SUBSCRIPTION_ID** and paste the value from the `id:` field in the first command.
+11. Click **Add secret**.
+12. Click **New secret** again.
+13. Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
+14. Click **Add secret**
+15. Back in your pull request, edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
 
   <details>
   <summary> If you'd like to copy the full workflow file, it should look like this: </summary>
@@ -268,7 +268,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
   ```
   </details>
 
-1. Click **Start commit** and commit to the `staging-workflow` branch.
+16. Click **Start commit** and commit to the `staging-workflow` branch.
 
 > **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
 
