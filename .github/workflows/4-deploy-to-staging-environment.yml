@@ -61,15 +61,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Create pull request from production-deployment-workflow
-      # branch to set up next step
-      - name: Create production-deployment-workflow pull request 
-        run: .github/script/create-workflow-pr.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_BRANCH: production-deployment-workflow
-          PR_TITLE: 'Added deploy-prod.yml workflow'
-
       # Update README to close <details id=4> and open <details id=5>
       # and set STEP to '5'
       - name: Update to step 5
