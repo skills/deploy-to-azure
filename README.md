@@ -374,14 +374,6 @@ To deploy successfully to our Azure environment:
           if: success()
           run: |
             az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
-
-        - name: Azure logout via Azure CLI
-          uses: azure/CLI@v1
-          with:
-            inlineScript: |
-              az logout
-              az cache purge
-              az account clear
   ```
   </details>
 
