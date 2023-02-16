@@ -42,6 +42,8 @@ Create two deployment workflows using GitHub Actions and Microsoft Azure.
 <details id=1>
 <summary><h2>Step 1: Trigger a job based on labels</h2></summary>
 
+_Welcome to the course :tada:_
+
 ![Screen Shot 2022-06-07 at 4 01 43 PM](https://user-images.githubusercontent.com/6351798/172490466-00f27580-8906-471f-ae83-ef3b6370df7d.png)
 
 A lot of things go into delivering "continuously". These things can range from culture and behavior to specific automation. In this exercise, we're going to focus on the  deployment part of our automation.
@@ -53,13 +55,13 @@ We'll use labels as triggers for multiple tasks:
 - When someone applies a "stage" label to a pull request, that'll be our indicator that we'd like to deploy our application to a staging environment.
 - When someone applies a "destroy environment" label to a pull request, we'll tear down any resources that are running on our Azure account.
 
-### Activity 1: Configure `GITHUB_TOKEN` permissions
+### :keyboard: Activity 1: Configure `GITHUB_TOKEN` permissions
 At the start of each workflow run, GitHub automatically creates a unique `GITHUB_TOKEN` secret to use in your workflow. We need to make sure this token has the permissions required for this course.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
 1. Go to Settings > Actions > General. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
 
-### Activity 2: Configure a trigger based on labels
+### :keyboard: Activity 2: Configure a trigger based on labels
 For now, we'll focus on staging. We'll spin up and destroy our environment in a later step.
 
 1. Go to the **Actions** tab.
@@ -93,6 +95,8 @@ For now, we'll focus on staging. We'll spin up and destroy our environment in a 
 <details id=2>
 <summary><h2>Step 2: Set up an Azure environment</h2></summary>
 
+_Good job getting started :gear:_
+
 ### Nice work triggering a job on specific labels 
 
 We won't be going into detail on the steps of this workflow, but it would be a good idea to become familiar with the actions we're using. They are:
@@ -105,7 +109,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 - [`azure/login`](https://github.com/Azure/login)
 - [`azure/webapps-deploy`](https://github.com/Azure/webapps-deploy)
 
-### Activity 1: Store your credentials in GitHub secrets and finish setting up your workflow
+### :keyboard: Activity 1: Store your credentials in GitHub secrets and finish setting up your workflow
 
 1. In a new tab, [create an Azure account](https://azure.microsoft.com/en-us/free/) if you don't already have one. If your Azure account is created through work, you may encounter issues accessing the necessary resources -- we recommend creating a new account for personal use and for this course.
     > **Note**: You may need a credit card to create an Azure account. If you're a student, you may also be able to take advantage of the [Student Developer Pack](https://education.github.com/pack) for access to Azure. If you'd like to continue with the course without an Azure account, Skills will still respond, but none of the deployments will work.
@@ -276,7 +280,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 <details id=3>
 <summary><h2>Step 3: Spin up an environment based on labels</h2></summary>
 
-### Nicely done! 
+_Nicely done! :heart:_
 
 GitHub Actions is cloud agnostic, so any cloud will work. We'll show how to deploy to Azure in this course.
 
@@ -287,7 +291,7 @@ GitHub Actions is cloud agnostic, so any cloud will work. We'll show how to depl
 
 Through the power of GitHub Actions, we can create, configure, and destroy these resources through our workflow files.
 
-### Activity 1: Set up a personal access token (PAT)
+### :keyboard: Activity 1: Set up a personal access token (PAT)
 Personal access tokens (PATs) are an alternative to using passwords for authentication to GitHub. We will use a PAT to allow your web app to pull the container image after your workflow pushes a newly built image to the registry.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
@@ -407,7 +411,7 @@ The second job destroys Azure resources so that you do not use your free minutes
 1. Logs into your Azure account with the [`azure/login`](https://github.com/Azure/login) action. The `AZURE_CREDENTIALS` secret you created earlier is used for authentication.
 1. Deletes the resource group we created earlier using [`az group delete`](https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete) on the Azure CLI.
 
-### Activity 2: Apply labels to create resources
+### :keyboard: Activity 2: Apply labels to create resources
 
 1. Edit the `spinup-destroy.yml` file in your open pull request and replace any `<username>` placeholders with your GitHub username. Commit this change directly to the `azure-configuration` branch.
 1. Back in the Pull request, create and apply the `spin up environment` label to your open pull request
@@ -419,7 +423,7 @@ The second job destroys Azure resources so that you do not use your free minutes
 <details id=4>
 <summary><h2>Step 4: Deploy to a staging environment based on labels</h2></summary>
 
-### Nicely done, you used a workflow to spin up your Azure environment  
+_Nicely done, you used a workflow to spin up your Azure environment  :dancer:_
 
 Now that the proper configuration and workflow files are present, let's test our actions! In this step, there's a small change to the game. Once you add the appropriate label to your pull request, you should be able to see the deployment!
 
@@ -428,7 +432,7 @@ Now that the proper configuration and workflow files are present, let's test our
 1. Commit that change to the new `staging-test` branch.
 1. Go to the Pull requests tab and there should be a yellow banner with the `staging-test` branch to `Compare & pull request`. Once the pull request is opened up, click `Create pull request`. 
 
-### Activity 1: Add the proper label to your pull request
+### :keyboard: Activity 1: Add the proper label to your pull request
 
 1. Ensure that the `GITHUB_TOKEN` for this repository has read and write permissions under **Workflow permissions**. [Learn more](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This is required for your workflow to be able to upload your image to the container registry.
 1. Create and apply the `stage` label to your open pull request
@@ -440,6 +444,8 @@ Now that the proper configuration and workflow files are present, let's test our
 <details id=5>
 <summary><h2>Step 5: Deploy to a production environment based on labels</h2></summary>
 
+_Deployed! :ship:_
+
 ### Nicely done
 
 As we've done before, create a new branch called `production-deployment-workflow` from `main`. In the `.github/workflows` directory, add a new file titled `deploy-prod.yml`. This new workflow deals specifically with commits to `main` and handles deployments to `prod`.
@@ -448,7 +454,7 @@ As we've done before, create a new branch called `production-deployment-workflow
 
 In our case, we can match our production environment to be exactly like our staging environment. This minimizes opportunities for surprises once we deploy to production.
 
-### Activity 1: Add triggers to production deployment workflow
+### :keyboard: Activity 1: Add triggers to production deployment workflow
 
 Copy and paste the following to your file, and replace any `<username>` placeholders with your GitHub username. Note that not much has changed from our staging workflow, except for our trigger, and that we won't be filtering by labels.
 
@@ -557,7 +563,7 @@ Copy and paste the following to your file, and replace any `<username>` placehol
 
 Great! The syntax you used tells GitHub Actions to only run that workflow when a commit is made to the main branch. Now we can put this workflow into action to deploy to production!
 
-### Activity 2: Merge your pull request
+### :keyboard: Activity 2: Merge your pull request
 1. You can now [merge](https://docs.github.com/en/get-started/quickstart/github-glossary#merge) your pull request!
 1. Click **Merge pull request** and leave this tab open as we will be applying a label to the closed pull request in the next step.
 1. Now we just have to wait for the package to be published to GitHub Container Registry and the deployment to occur. When the workflow is finished running, refresh this page for the next step.
@@ -568,13 +574,14 @@ Great! The syntax you used tells GitHub Actions to only run that workflow when a
 <details id=6>
 <summary><h2>Step 6: Production deployment</h2></summary>
 
-### Nice work!
+_Nice work! :sparkle:_
+
 Great work, you've done it! You should be able to see your container image in the **Packages** section of your account on the main repository page. You can get the deployment URL in the Actions log, just like the staging URL.
 
 ### The cloud environment
 Throughout the course you've spun up resources that, if left unattended, could incur billing or consume your free minutes from the cloud provider. Once you have verified your application in production, let's tear down those environments so that you can keep your minutes for more learning!
 
-### Activity 1: Destroy any running resources so you don't incur charges
+### :keyboard: Activity 1: Destroy any running resources so you don't incur charges
 
 1. Create and apply the `destroy environment` label to your merged `production-deployment-workflow` pull request. If you have already closed the tab with your pull request, you can open it again by clicking **Pull requests** and then clicking the **Closed** filter to view merged pull requests.
 
@@ -591,6 +598,8 @@ Throughout the course you've spun up resources that, if left unattended, could i
 
 <details id=X>
 <summary><h2>Finish</h2></summary>
+
+<img src=https://octodex.github.com/images/octdrey-catburn.jpg alt=celebrate width=300 align=right>
 
 ### Congratulations, you've completed this course!
 
