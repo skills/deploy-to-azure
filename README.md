@@ -35,7 +35,7 @@ Create two deployment workflows using GitHub Actions and Microsoft Azure.
    - For owner, choose your personal account or an organization to host the repository.
    - We recommend creating a public repository—private repositories will [use Actions minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).
    ![Create a new repository](https://user-images.githubusercontent.com/1221423/218594143-e60462b6-9f2a-4fa3-80de-063ac5429aab.png)
-3. After your new repository is created, wait about 20 seconds, then refresh the page. Follow the step-by-step instructions in the new repository's README.
+3. After your new repository is created, wait about 1 minute, then refresh the page. Follow the step-by-step instructions in the new repository's README.
 
 </details>
 
@@ -85,7 +85,7 @@ For now, we'll focus on staging. We'll spin up and destroy our environment in a 
 8. Click **Propose changes**.
 9. Click **Create pull request**.
 
-> **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
+> **Note**: Wait about 1 minute then refresh this page for GitHub Actions to run before continuing to the next step.
 
 </details>
 
@@ -268,7 +268,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 
 16. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
 
-> **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
+> **Note**: Wait about 1 minute then refresh this page for GitHub Actions to run before continuing to the next step.
 
 </details>
 
@@ -580,7 +580,7 @@ Throughout the course you've spun up resources that, if left unattended, could i
 
   Now that you've applied the proper label, let's wait for the GitHub Actions workflow to complete. When it's finished, you can confirm that your environment has been destroyed by visiting your app's URL, or by logging into the Azure portal to see it is not running.
 
-2. Wait about 20 seconds then refresh this page for the next step.
+2. Wait about 1 minute then refresh this page for the next step.
 
 </details>
 
