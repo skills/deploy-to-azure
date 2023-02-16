@@ -16,7 +16,7 @@
   Do not use quotes on the <details> tag attributes.
 -->
 
-<details id=0>
+<details id=0 open>
 <summary><h2>Welcome</h2></summary>
 
 Create two deployment workflows using GitHub Actions and Microsoft Azure.
@@ -293,7 +293,7 @@ Through the power of GitHub Actions, we can create, configure, and destroy these
 Personal access tokens (PATs) are an alternative to using passwords for authentication to GitHub. We will use a PAT to allow your web app to pull the container image after your workflow pushes a newly built image to the registry.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-2. Create a personal access token with the `repo`, and `read:packages` scopes. For more information, see ["Creating a personal access token."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+2. Create a personal access token with the `repo` and `read:packages` scopes. For more information, see ["Creating a personal access token."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 3. Once you have generated the token we will need to store it in a secret so that it can be used within a workflow. Create a new repository secret named `CR_PAT` and paste the PAT token in as the value.
 4. With this done we can move on to setting up our workflow.
 
@@ -302,9 +302,8 @@ Personal access tokens (PATs) are an alternative to using passwords for authenti
 
 To deploy successfully to our Azure environment:
 
-1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab of your repository page. 
-
-2. Once you're in the new `azure-configuration` branch go into the `.github/workflow` directory and create a new file called `spinup-destroy.yml`. 
+1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab on your repository page. 
+2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml`. 
 
   <details>
   <summary>Copy and paste the following into this new file:</summary>
@@ -389,9 +388,7 @@ To deploy successfully to our Azure environment:
   </details>
 
 3. Click `Commit directly to the azure-configuration branch.` and go to the Pull requests tab of the repository. 
-
-4. Compare between the `main` and `azure-configuration` branches respectively and click `Create pull request`. 
-
+4. Compare between the `main` and `azure-configuration` branches, respectively, and click `Create pull request`. 
 5. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`. 
 
 We will cover the key functionality below and then put the workflow to use by applying a label to the pull request.
@@ -435,9 +432,10 @@ The second job destroys Azure resources so that you do not use your free minutes
 
 Now that the proper configuration and workflow files are present, let's test our actions! In this step, there's a small change to the game. Once you add the appropriate label to your pull request, you should be able to see the deployment!
 
-Now, let's create a new branch named `staging-test` from `main` using the same steps as you did for the previous `azure-configuration` branch. 
-
-Edit the `.github/workflows/deploy-staging.yml` file and replace the evey `<username>` with your GitHub username. After you commit that change to the new `staging-test` branch, go to the Pull requests tab and there should be a yellow banner to `Compare & pull request`. Once the pull request is opened up, click `Create pull request`. 
+1. Create a new branch named `staging-test` from `main` using the same steps as you did for the previous `azure-configuration` branch. 
+1. Edit the `.github/workflows/deploy-staging.yml` file, and replace every `<username>` with your GitHub username. 
+1. Commit that change to the new `staging-test` branch.
+1. Go to the Pull requests tab and there should be a yellow banner to `Compare & pull request`. Once the pull request is opened up, click `Create pull request`. 
 
 ### Activity 1: Add the proper label to your pull request
 
@@ -455,7 +453,7 @@ Edit the `.github/workflows/deploy-staging.yml` file and replace the evey `<user
 
 ### Nicely done
 
-As we've done before, create a new branch called `production-deployment-workflow` fom `main`. In the `.github/workflows` directory add a new file called `deploy-prod.yml`. This new workflow deals specifically with commits to `main` and handles deployments to `prod`.
+As we've done before, create a new branch called `production-deployment-workflow` from `main`. In the `.github/workflows` directory, add a new file titled `deploy-prod.yml`. This new workflow deals specifically with commits to `main` and handles deployments to `prod`.
 
 **Continuous delivery** (CD) is a concept that contains many behaviors and other, more specific concepts. One of those concepts is **test in production**. That can mean different things to different projects and different companies, and isn't a strict rule that says you are or aren't "doing CD".
 
