@@ -57,9 +57,7 @@ We'll use labels as triggers for multiple tasks:
 At the start of each workflow run, GitHub automatically creates a unique `GITHUB_TOKEN` secret to use in your workflow. We need to make sure this token has the permissions required for this course.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-1. Go to Settings > Actions > General. Ensure that the `GITHUB_TOKEN` for this repository has **Allow GitHub Actions to create and approve pull requests** enabled under **Workflow permissions**. [Learn how](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token). This will allow GitHub Actions to merge pull requests as you move through the steps in this course.
-1. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
-
+1. Go to Settings > Actions > General. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
 
 ### Activity 2: Configure a trigger based on labels
 For now, we'll focus on staging. We'll spin up and destroy our environment in a later step.
@@ -84,7 +82,7 @@ For now, we'll focus on staging. We'll spin up and destroy our environment in a 
         if: contains(github.event.pull_request.labels.*.name, 'stage')
     ```
 7. Click **Start commit**, and choose to make a new branch named `staging-workflow`.
-8. Click **Propose a new file**.
+8. Click **Propose changes**.
 9. Click **Create pull request**.
 
 > **Note**: Wait about 20 seconds then refresh this page for GitHub Actions to run before continuing to the next step.
@@ -161,7 +159,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 12. Click **New repository secret** again.
 13. Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
 14. Click **Add secret**
-15. Go back to the Pull requests tab and in your pull request, edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
+15. Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
 
   <details>
   <summary> If you'd like to copy the full workflow file, it should look like this: </summary>
