@@ -97,8 +97,6 @@ For now, we'll focus on staging. We'll spin up and destroy our environment in a 
 
 _Good job getting started :gear:_
 
-### Nice work triggering a job on specific labels 
-
 We won't be going into detail on the steps of this workflow, but it would be a good idea to become familiar with the actions we're using. They are:
 
 - [`actions/checkout`](https://github.com/actions/checkout)
