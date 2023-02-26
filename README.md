@@ -455,107 +455,108 @@ In our case, we can match our production environment to be exactly like our stag
 
 ### :keyboard: Activity 1: Add triggers to production deployment workflow
 
-Copy and paste the following to your file, and replace any `<username>` placeholders with your GitHub username. Note that not much has changed from our staging workflow, except for our trigger, and that we won't be filtering by labels.
+1. Copy and paste the following to your file, and replace any `<username>` placeholders with your GitHub username. Note that not much has changed from our staging workflow, except for our trigger, and that we won't be filtering by labels.
 
-  ```yaml
-  name: Deploy to production
+    ```yaml
+    name: Deploy to production
 
-  on:
-    push:
-      branches:
-        - main
+    on:
+      push:
+        branches:
+          - main
 
-  env:
-    IMAGE_REGISTRY_URL: ghcr.io
-    ###############################################
-    ### Replace <username> with GitHub username ###
-    ###############################################
-    DOCKER_IMAGE_NAME: <username>-azure-ttt
-    AZURE_WEBAPP_NAME: <username>-ttt-app
-    ###############################################
+    env:
+      IMAGE_REGISTRY_URL: ghcr.io
+      ###############################################
+      ### Replace <username> with GitHub username ###
+      ###############################################
+      DOCKER_IMAGE_NAME: <username>-azure-ttt
+      AZURE_WEBAPP_NAME: <username>-ttt-app
+      ###############################################
 
-  jobs:
-    build:
-      runs-on: ubuntu-latest
+    jobs:
+      build:
+        runs-on: ubuntu-latest
 
-      steps:
-        - uses: actions/checkout@v3
-        - name: npm install and build webpack
-          run: |
-            npm install
-            npm run build
-        - uses: actions/upload-artifact@v3
-          with:
-            name: webpack artifacts
-            path: public/
+        steps:
+          - uses: actions/checkout@v3
+          - name: npm install and build webpack
+            run: |
+              npm install
+              npm run build
+          - uses: actions/upload-artifact@v3
+            with:
+              name: webpack artifacts
+              path: public/
 
-    Build-Docker-Image:
-      runs-on: ubuntu-latest
-      needs: build
-      name: Build image and store in GitHub Container Registry
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+      Build-Docker-Image:
+        runs-on: ubuntu-latest
+        needs: build
+        name: Build image and store in GitHub Container Registry
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v3
 
-        - name: Download built artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: webpack artifacts
-            path: public
+          - name: Download built artifact
+            uses: actions/download-artifact@v3
+            with:
+              name: webpack artifacts
+              path: public
 
-        - name: Log in to GHCR
-          uses: docker/login-action@v2
-          with:
-            registry: ${{ env.IMAGE_REGISTRY_URL }}
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+          - name: Log in to GHCR
+            uses: docker/login-action@v2
+            with:
+              registry: ${{ env.IMAGE_REGISTRY_URL }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Extract metadata (tags, labels) for Docker
-          id: meta
-          uses: docker/metadata-action@v4
-          with:
-            images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
-            tags: |
-              type=sha,format=long,prefix=
+          - name: Extract metadata (tags, labels) for Docker
+            id: meta
+            uses: docker/metadata-action@v4
+            with:
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
+              tags: |
+                type=sha,format=long,prefix=
 
-        - name: Build and push Docker image
-          uses: docker/build-push-action@v3
-          with:
-            context: .
-            push: true
-            tags: ${{ steps.meta.outputs.tags }}
-            labels: ${{ steps.meta.outputs.labels }}
+          - name: Build and push Docker image
+            uses: docker/build-push-action@v3
+            with:
+              context: .
+              push: true
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
 
-    Deploy-to-Azure:
-      runs-on: ubuntu-latest
-      needs: Build-Docker-Image
-      name: Deploy app container to Azure
-      steps:
-        - name: "Login via Azure CLI"
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+      Deploy-to-Azure:
+        runs-on: ubuntu-latest
+        needs: Build-Docker-Image
+        name: Deploy app container to Azure
+        steps:
+          - name: "Login via Azure CLI"
+            uses: azure/login@v1
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-        - uses: azure/docker-login@v1
-          with:
-            login-server: ${{env.IMAGE_REGISTRY_URL}}
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+          - uses: azure/docker-login@v1
+            with:
+              login-server: ${{env.IMAGE_REGISTRY_URL}}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Deploy web app container
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: ${{env.AZURE_WEBAPP_NAME}}
-            images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{github.sha}}
+          - name: Deploy web app container
+            uses: azure/webapps-deploy@v2
+            with:
+              app-name: ${{env.AZURE_WEBAPP_NAME}}
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{github.sha}}
 
-        - name: Azure logout via Azure CLI
-          uses: azure/CLI@v1
-          with:
-            inlineScript: |
-              az logout
-              az cache purge
-              az account clear
-  ```
+          - name: Azure logout via Azure CLI
+            uses: azure/CLI@v1
+            with:
+              inlineScript: |
+                az logout
+                az cache purge
+                az account clear
+    ```
+
 1. Update every `<username>` to your GitHub username. 
 1. Commit your changes to the `production-deployment-workflow` branch.
 1. Go to the Pull requests tab and click **Compare & pull request** for the `production-deployment-workflow` branch and create a Pull request.
