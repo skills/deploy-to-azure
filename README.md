@@ -264,6 +264,15 @@ We won't be going into detail on the steps of this workflow, but it would be a g
                 az account clear
     ```
 
+    <details><summary>About the workflow</summary>
+    
+    This workflow has three jobs:
+    - The first job builds the web app as a webpack and uploads it as an artifact
+    - The second job downloads the webpack artifact from the first job and then builds a Nginx based docker image. The docker image is uploaded to the `ghcr.io` container registry.
+    - The third job deploys the container image from the container registry to the Azure web app.
+    
+    </details>
+
 16. After you've edited the file, click **Start commit** > **Commit changes** and commit to the `staging-workflow` branch.
 
 > **Note**: Wait about 1 minute then refresh this page for GitHub Actions to run before continuing to the next step.
