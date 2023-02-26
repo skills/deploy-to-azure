@@ -268,7 +268,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
   ```
   </details>
 
-16. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
+16. After you've edited the file, click **Start commit** > **Commit changes** and commit to the `staging-workflow` branch.
 
 > **Note**: Wait about 1 minute then refresh this page for GitHub Actions to run before continuing to the next step.
 
@@ -379,7 +379,7 @@ To deploy successfully to our Azure environment:
   ```
   </details>
 
-3. Click **Commit changes...** and select `Commit directly to the azure-configuration branch.` before clicking **Commit changes**. 
+3. Under **Commit new file** select `Commit directly to the azure-configuration branch.` before clicking the **Commit new file** button.
 4. Go to the Pull requests tab of the repository. 
 5. There should be a yellow banner with the `azure-configuration` branch where you can click **Compare & pull request**. 
 6. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`. 
