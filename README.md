@@ -187,6 +187,9 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 
         steps:
           - uses: actions/checkout@v3
+          - uses: actions/setup-node@v3
+            with:
+              node-version: 16
           - name: npm install and build webpack
             run: |
               npm install
@@ -480,6 +483,9 @@ In our case, we can match our production environment to be exactly like our stag
 
         steps:
           - uses: actions/checkout@v3
+          - uses: actions/setup-node@v3
+            with:
+              node-version: 16
           - name: npm install and build webpack
             run: |
               npm install
