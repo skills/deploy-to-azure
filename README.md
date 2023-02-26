@@ -161,112 +161,108 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 12. Click **New repository secret** again.
 13. Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
 14. Click **Add secret**
-15. Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
+15. Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to add some new actions. Replace the entire contents of the file with the following:
 
-  <details>
-  <summary> If you'd like to copy the full workflow file, it should look like this: </summary>
+    ```yaml
+    name: Deploy to staging
 
-  ```yaml
-  name: Deploy to staging
+    on:
+      pull_request:
+        types: [labeled]
 
-  on:
-    pull_request:
-      types: [labeled]
+    env:
+      IMAGE_REGISTRY_URL: ghcr.io
+      ###############################################
+      ### Replace <username> with GitHub username ###
+      ###############################################
+      DOCKER_IMAGE_NAME: <username>-azure-ttt
+      AZURE_WEBAPP_NAME: <username>-ttt-app
+      ###############################################
 
-  env:
-    IMAGE_REGISTRY_URL: ghcr.io
-    ###############################################
-    ### Replace <username> with GitHub username ###
-    ###############################################
-    DOCKER_IMAGE_NAME: <username>-azure-ttt
-    AZURE_WEBAPP_NAME: <username>-ttt-app
-    ###############################################
+    jobs:
+      build:
+        if: contains(github.event.pull_request.labels.*.name, 'stage')
 
-  jobs:
-    build:
-      if: contains(github.event.pull_request.labels.*.name, 'stage')
+        runs-on: ubuntu-latest
 
-      runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+          - name: npm install and build webpack
+            run: |
+              npm install
+              npm run build
+          - uses: actions/upload-artifact@v3
+            with:
+              name: webpack artifacts
+              path: public/
 
-      steps:
-        - uses: actions/checkout@v3
-        - name: npm install and build webpack
-          run: |
-            npm install
-            npm run build
-        - uses: actions/upload-artifact@v3
-          with:
-            name: webpack artifacts
-            path: public/
+      Build-Docker-Image:
+        runs-on: ubuntu-latest
+        needs: build
+        name: Build image and store in GitHub Container Registry
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v3
 
-    Build-Docker-Image:
-      runs-on: ubuntu-latest
-      needs: build
-      name: Build image and store in GitHub Container Registry
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+          - name: Download built artifact
+            uses: actions/download-artifact@v3
+            with:
+              name: webpack artifacts
+              path: public
 
-        - name: Download built artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: webpack artifacts
-            path: public
+          - name: Log in to GHCR
+            uses: docker/login-action@v2
+            with:
+              registry: ${{ env.IMAGE_REGISTRY_URL }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Log in to GHCR
-          uses: docker/login-action@v2
-          with:
-            registry: ${{ env.IMAGE_REGISTRY_URL }}
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+          - name: Extract metadata (tags, labels) for Docker
+            id: meta
+            uses: docker/metadata-action@v4
+            with:
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
+              tags: |
+                type=sha,format=long,prefix=
 
-        - name: Extract metadata (tags, labels) for Docker
-          id: meta
-          uses: docker/metadata-action@v4
-          with:
-            images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
-            tags: |
-              type=sha,format=long,prefix=
+          - name: Build and push Docker image
+            uses: docker/build-push-action@v3
+            with:
+              context: .
+              push: true
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
 
-        - name: Build and push Docker image
-          uses: docker/build-push-action@v3
-          with:
-            context: .
-            push: true
-            tags: ${{ steps.meta.outputs.tags }}
-            labels: ${{ steps.meta.outputs.labels }}
+      Deploy-to-Azure:
+        runs-on: ubuntu-latest
+        needs: Build-Docker-Image
+        name: Deploy app container to Azure
+        steps:
+          - name: "Login via Azure CLI"
+            uses: azure/login@v1
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    Deploy-to-Azure:
-      runs-on: ubuntu-latest
-      needs: Build-Docker-Image
-      name: Deploy app container to Azure
-      steps:
-        - name: "Login via Azure CLI"
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+          - uses: azure/docker-login@v1
+            with:
+              login-server: ${{env.IMAGE_REGISTRY_URL}}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-        - uses: azure/docker-login@v1
-          with:
-            login-server: ${{env.IMAGE_REGISTRY_URL}}
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+          - name: Deploy web app container
+            uses: azure/webapps-deploy@v2
+            with:
+              app-name: ${{env.AZURE_WEBAPP_NAME}}
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
 
-        - name: Deploy web app container
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: ${{env.AZURE_WEBAPP_NAME}}
-            images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
-
-        - name: Azure logout via Azure CLI
-          uses: azure/CLI@v1
-          with:
-            inlineScript: |
-              az logout
-              az cache purge
-              az account clear
-  ```
-  </details>
+          - name: Azure logout via Azure CLI
+            uses: azure/CLI@v1
+            with:
+              inlineScript: |
+                az logout
+                az cache purge
+                az account clear
+    ```
 
 16. After you've edited the file, click **Start commit** > **Commit changes** and commit to the `staging-workflow` branch.
 
@@ -303,81 +299,77 @@ Personal access tokens (PATs) are an alternative to using passwords for authenti
 To deploy successfully to our Azure environment:
 
 1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab on your repository page. 
-2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml` by clicking **Add file**. 
+2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml` by clicking **Add file**. Copy and paste the following into this new file:
 
-  <details>
-  <summary>Copy and paste the following into this new file:</summary>
+    ```yaml
+    name: Configure Azure environment
 
-  ```yaml
-  name: Configure Azure environment
+    on:
+      pull_request:
+        types: [labeled]
 
-  on:
-    pull_request:
-      types: [labeled]
+    env:
+      IMAGE_REGISTRY_URL: ghcr.io
+      AZURE_RESOURCE_GROUP: cd-with-actions
+      AZURE_APP_PLAN: actions-ttt-deployment
+      AZURE_LOCATION: '"Central US"'
+      ###############################################
+      ### Replace <username> with GitHub username ###
+      ###############################################
+      AZURE_WEBAPP_NAME: <username>-ttt-app
 
-  env:
-    IMAGE_REGISTRY_URL: ghcr.io
-    AZURE_RESOURCE_GROUP: cd-with-actions
-    AZURE_APP_PLAN: actions-ttt-deployment
-    AZURE_LOCATION: '"Central US"'
-    ###############################################
-    ### Replace <username> with GitHub username ###
-    ###############################################
-    AZURE_WEBAPP_NAME: <username>-ttt-app
+    jobs:
+      setup-up-azure-resources:
+        runs-on: ubuntu-latest
+        if: contains(github.event.pull_request.labels.*.name, 'spin up environment')
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
 
-  jobs:
-    setup-up-azure-resources:
-      runs-on: ubuntu-latest
-      if: contains(github.event.pull_request.labels.*.name, 'spin up environment')
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
+          - name: Azure login
+            uses: azure/login@v1
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-        - name: Azure login
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+          - name: Create Azure resource group
+            if: success()
+            run: |
+              az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-        - name: Create Azure resource group
-          if: success()
-          run: |
-            az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          - name: Create Azure app service plan
+            if: success()
+            run: |
+              az appservice plan create --resource-group ${{env.AZURE_RESOURCE_GROUP}} --name ${{env.AZURE_APP_PLAN}} --is-linux --sku F1 --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-        - name: Create Azure app service plan
-          if: success()
-          run: |
-            az appservice plan create --resource-group ${{env.AZURE_RESOURCE_GROUP}} --name ${{env.AZURE_APP_PLAN}} --is-linux --sku F1 --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          - name: Create webapp resource
+            if: success()
+            run: |
+              az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }}  --deployment-container-image-name nginx --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-        - name: Create webapp resource
-          if: success()
-          run: |
-            az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }}  --deployment-container-image-name nginx --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          - name: Configure webapp to use GHCR
+            if: success()
+            run: |
+              az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.CR_PAT}} --docker-registry-server-url https://${{env.IMAGE_REGISTRY_URL}} --docker-registry-server-user ${{github.actor}} --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-        - name: Configure webapp to use GHCR
-          if: success()
-          run: |
-            az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.CR_PAT}} --docker-registry-server-url https://${{env.IMAGE_REGISTRY_URL}} --docker-registry-server-user ${{github.actor}} --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      destroy-azure-resources:
+        runs-on: ubuntu-latest
 
-    destroy-azure-resources:
-      runs-on: ubuntu-latest
+        if: contains(github.event.pull_request.labels.*.name, 'destroy environment')
 
-      if: contains(github.event.pull_request.labels.*.name, 'destroy environment')
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
 
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
+          - name: Azure login
+            uses: azure/login@v1
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-        - name: Azure login
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-        - name: Destroy Azure environment
-          if: success()
-          run: |
-            az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
-  ```
-  </details>
+          - name: Destroy Azure environment
+            if: success()
+            run: |
+              az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
+    ```
 
 3. Under **Commit new file** select `Commit directly to the azure-configuration branch.` before clicking the **Commit new file** button.
 4. Go to the Pull requests tab of the repository. 
