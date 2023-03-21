@@ -7,6 +7,8 @@
 
 # Deploy to Azure
 
+_Create two deployment workflows using GitHub Actions and Microsoft Azure._
+
 <!--
   <<< Author notes: Start of the course >>>
   Include start button, a note about Actions minutes,
