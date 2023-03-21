@@ -5,7 +5,7 @@
   Add your open source license, GitHub uses Creative Commons Attribution 4.0 International.
 -->
 
-# GitHub Actions: Continuous Delivery with Azure
+# Deploy to Azure
 
 <!--
   <<< Author notes: Start of the course >>>
