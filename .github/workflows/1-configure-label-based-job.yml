@@ -1,4 +1,4 @@
-name: Check step 1, Trigger a job based on labels
+name: Step 1, Trigger a job based on labels
 
 # This step triggers after 0-start.yml
 # This step sets STEP to 2

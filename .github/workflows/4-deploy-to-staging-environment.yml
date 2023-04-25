@@ -1,4 +1,4 @@
-name: Check step 4, Deploy to staging
+name: Step 4, Deploy to staging
 
 # This step sets STEP to 5
 # This step closes <details id=4> and opens <details id=5>

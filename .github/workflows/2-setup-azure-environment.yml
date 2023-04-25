@@ -1,4 +1,4 @@
-name: Check step 2, Set up the Azure environment
+name: Step 2, Set up the Azure environment
 
 # This step sets STEP to 3
 # This step closes <details id=2> and opens <details id=3>

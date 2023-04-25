@@ -1,4 +1,4 @@
-name: Check step 6, Production deployment cleanup
+name: Step 6, Production deployment cleanup
 
 # This step sets STEP to X
 # This step closes <details id=6> and opens <details id=X>

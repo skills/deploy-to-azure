@@ -1,4 +1,4 @@
-name: Check step 3, Spin up environment
+name: Step 3, Spin up environment
 
 # This step sets STEP to 4
 # This step closes <details id=3> and opens <details id=4>

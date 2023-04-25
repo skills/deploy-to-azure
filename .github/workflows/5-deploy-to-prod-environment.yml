@@ -1,4 +1,4 @@
-name: Check step 5, Test the deploy to staging workflow
+name: Step 5, Test the deploy to staging workflow
 
 # This step triggers after a pull requst is merged to `main`
 # This step sets STEP to 6
