@@ -61,7 +61,7 @@ We'll use labels as triggers for multiple tasks:
 At the start of each workflow run, GitHub automatically creates a unique `GITHUB_TOKEN` secret to use in your workflow. We need to make sure this token has the permissions required for this course.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-1. Go to Settings > Actions > General. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
+1. Go to Settings > Actions > Workflow Permissions. Ensure that the `GITHUB_TOKEN` also has **Read and write permissions** enabled under **Workflow permissions**. This is required for your workflow to be able to upload your image to the container registry. 
 
 ### :keyboard: Activity 2: Configure a trigger based on labels
 For now, we'll focus on staging. We'll spin up and destroy our environment in a later step.
