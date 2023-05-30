@@ -5,7 +5,7 @@ name: Step 6, Production deployment cleanup
 # This will run after the "Configure Azure environment" workflow
 # completes on the production-deployment-workflow branch
 # Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
-on: 
+on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Configure Azure environment"]

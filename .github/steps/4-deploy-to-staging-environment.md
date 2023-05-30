@@ -1,6 +1,6 @@
 ## Step 4: Deploy to a staging environment based on labels
 
-_Nicely done, you used a workflow to spin up your Azure environment  :dancer:_
+_Nicely done, you used a workflow to spin up your Azure environment :dancer:_
 
 Now that the proper configuration and workflow files are present, let's test our actions! In this step, there's a small change to the game. Once you add the appropriate label to your pull request, you should be able to see the deployment!
 

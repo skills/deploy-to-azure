@@ -60,14 +60,14 @@ jobs:
         run: .github/script/check-file.sh
         env:
           FILE: .github/workflows/deploy-staging.yml
-          SEARCH_LIST: 'Build-Docker-Image actions/download-artifact docker/login-action docker/build-push-action'
+          SEARCH_LIST: "Build-Docker-Image actions/download-artifact docker/login-action docker/build-push-action"
 
       # Verify the learner configured the Deploy-to-Azure job.
       - name: Verify Deploy-to-Azure job
         run: .github/script/check-file.sh
         env:
           FILE: .github/workflows/deploy-staging.yml
-          SEARCH_LIST: 'Deploy-to-Azure azure/login azure/webapps-deploy'
+          SEARCH_LIST: "Deploy-to-Azure azure/login azure/webapps-deploy"
 
       # Merge the pull open pull request.
       - name: Merge Pull Request
