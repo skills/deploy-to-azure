@@ -27,8 +27,7 @@ To deploy successfully to our Azure environment:
 1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab on your repository page.
 2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml` by clicking **Add file**.
 
-  <details>
-  <summary>Copy and paste the following into this new file:</summary>
+  Copy and paste the following into this new file:
 
   ```yaml
   name: Configure Azure environment

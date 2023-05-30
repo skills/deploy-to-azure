@@ -70,8 +70,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 14. Click **Add secret**
 15. Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
 
-  <details>
-  <summary> If you'd like to copy the full workflow file, it should look like this: </summary>
+  The full workflow file, should look like this:
 
   ```yaml
   name: Deploy to staging
