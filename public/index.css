@@ -1,4 +1,6 @@
-#game { display: flex; }
+#game {
+  display: flex;
+}
 
 #tictactoe {
   border-collapse: collapse;
@@ -16,7 +18,7 @@
 }
 
 #tictactoe td:hover {
-  background: #CCCCCC;
+  background: #cccccc;
 }
 
 #tictactoe tr {
@@ -41,8 +43,9 @@
   border-bottom: thin solid black;
 }
 
-#score h2 { margin-top: 0; }
-
+#score h2 {
+  margin-top: 0;
+}
 
 #app {
   margin: auto;
