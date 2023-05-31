@@ -1,3 +1,9 @@
+<!--
+  <<< Author notes: Step 3 >>>
+  Start this step by acknowledging the previous step.
+  Define terms and link to docs.github.com.
+-->
+
 ## Step 3: Spin up an environment based on labels
 
 _Nicely done! :heart:_

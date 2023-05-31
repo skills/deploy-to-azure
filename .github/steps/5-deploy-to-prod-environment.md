@@ -1,3 +1,9 @@
+<!--
+  <<< Author notes: Step 5 >>>
+  Start this step by acknowledging the previous step.
+  Define terms and link to docs.github.com.
+-->
+
 ## Step 5: Deploy to a production environment based on labels
 
 _Deployed! :ship:_

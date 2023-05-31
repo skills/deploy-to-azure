@@ -1,3 +1,9 @@
+<!--
+  <<< Author notes: Step 2 >>>
+  Start this step by acknowledging the previous step.
+  Define terms and link to docs.github.com.
+-->
+
 ## Step 2: Set up an Azure environment
 
 _Good job getting started :gear:_
