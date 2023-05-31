@@ -57,17 +57,47 @@ jobs:
 
       # Verify the learner configured Build-Docker-Image job.
       - name: Verify Build-Docker-Image job
-        run: .github/script/check-file.sh
-        env:
-          FILE: .github/workflows/deploy-staging.yml
-          SEARCH_LIST: "Build-Docker-Image actions/download-artifact docker/login-action docker/build-push-action"
+        uses: skills/action-check-file@v1
+        with:
+          file: .github/workflows/deploy-staging.yml
+          search: "Build-Docker-Image"
+
+      - name: Verify Build-Docker-Image job
+        uses: skills/action-check-file@v1
+        with:
+          file: .github/workflows/deploy-staging.yml
+          search: "actions/download-artifact"
+
+      - name: Verify Build-Docker-Image job
+        uses: skills/action-check-file@v1
+        with:
+          file: .github/workflows/deploy-staging.yml
+          search: "docker/login-action"
+
+      - name: Verify Build-Docker-Image job
+        uses: skills/action-check-file@v1
+        with:
+          file: .github/workflows/deploy-staging.yml
+          search: "docker/build-push-action"
 
       # Verify the learner configured the Deploy-to-Azure job.
       - name: Verify Deploy-to-Azure job
-        run: .github/script/check-file.sh
+        uses: skills/action-check-file@v1
         env:
-          FILE: .github/workflows/deploy-staging.yml
-          SEARCH_LIST: "Deploy-to-Azure azure/login azure/webapps-deploy"
+          file: .github/workflows/deploy-staging.yml
+          search: "Deploy-to-Azure"
+
+      - name: Verify Deploy-to-Azure job
+        uses: skills/action-check-file@v1
+        env:
+          file: .github/workflows/deploy-staging.yml
+          search: "azure/login"
+
+      - name: Verify Deploy-to-Azure job
+        uses: skills/action-check-file@v1
+        env:
+          file: .github/workflows/deploy-staging.yml
+          search: "azure/webapps-deploy"
 
       # Merge the pull open pull request.
       - name: Merge Pull Request
