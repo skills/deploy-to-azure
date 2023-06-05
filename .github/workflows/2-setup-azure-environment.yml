@@ -83,19 +83,19 @@ jobs:
       # Verify the learner configured the Deploy-to-Azure job.
       - name: Verify Deploy-to-Azure job
         uses: skills/action-check-file@v1
-        env:
+        with:
           file: .github/workflows/deploy-staging.yml
           search: "Deploy-to-Azure"
 
       - name: Verify Deploy-to-Azure job
         uses: skills/action-check-file@v1
-        env:
+        with:
           file: .github/workflows/deploy-staging.yml
           search: "azure/login"
 
       - name: Verify Deploy-to-Azure job
         uses: skills/action-check-file@v1
-        env:
+        with:
           file: .github/workflows/deploy-staging.yml
           search: "azure/webapps-deploy"
 
