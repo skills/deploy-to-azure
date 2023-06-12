@@ -107,7 +107,9 @@ jobs:
 
       # Pull main.
       - name: Pull main
-        run: ./.github/script/pull-main.sh
+        run: |
+          chmod +x ./.github/script/initialize-repository.sh
+          ./.github/script/initialize-repository.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
