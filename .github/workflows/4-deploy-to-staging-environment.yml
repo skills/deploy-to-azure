@@ -2,8 +2,8 @@ name: Step 4, Deploy to staging
 
 # This workflow updates from step 4 to step 5.
 
-# This will run after the "Configure Azure environment" workflow
-# completes on the azure-configuration branch
+# This will run after the "Deploy to staging" workflow
+# completes on the staging-test branch
 # Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
