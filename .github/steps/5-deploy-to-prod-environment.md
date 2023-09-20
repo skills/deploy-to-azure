@@ -43,6 +43,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: npm install and build webpack
         run: |
           npm install
