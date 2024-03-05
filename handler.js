@@ -36,6 +36,8 @@ exports.lambdaHandler = async (event, context) => {
   const requestPath = event.path;
   const { content, type } = files[requestPath];
 
+  //this is important
+
   return {
     headers: { "content-type": type },
     statusCode: 200,
