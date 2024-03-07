@@ -19,8 +19,8 @@
 # through the course.
 
 # Setup committer identity
-git config user.name github-actions
-git config user.email github-actions@github.com
+git config user.name github-actions[bot]
+git config user.email github-actions[bot]@users.noreply.github.com
 
 # Fetch all remote branches
 git pull --all
