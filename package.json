@@ -30,7 +30,7 @@
     "standard": "^14.3.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
     "kind-of": "^6.0.3",
