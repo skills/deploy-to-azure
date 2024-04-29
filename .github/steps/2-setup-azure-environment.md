@@ -52,8 +52,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 
     ````shell
     az ad sp create-for-rbac --name "GitHub-Actions" --role contributor \
-     --scopes /subscriptions/{subscription-id} \
-     --sdk-auth
+     --scopes /subscriptions/{subscription-id}
 
         # Replace {subscription-id} with the same id stored in AZURE_SUBSCRIPTION_ID.
         ```
