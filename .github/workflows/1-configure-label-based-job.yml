@@ -60,7 +60,7 @@ jobs:
         uses: skills/action-check-file@v1
         with:
           file: .github/workflows/deploy-staging.yml
-          search: "github.event.pull_request.labels\\.\\*.name.*stage"
+          search: "github\\.event\\.pull_request\\.labels\\.\\*\\.name.*stage"
 
       # In README.md, switch step 1 for step 2.
       - name: Update to step 2
