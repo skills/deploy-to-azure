@@ -50,16 +50,14 @@ We won't be going into detail on the steps of this workflow, but it would be a g
     ```
 1.  In your terminal, run the command below.
 
-    ````shell
+    ```shell
     az ad sp create-for-rbac --name "GitHub-Actions" --role contributor \
      --scopes /subscriptions/{subscription-id}
 
         # Replace {subscription-id} with the same id stored in AZURE_SUBSCRIPTION_ID.
-        ```
+    ```
 
-    > **Note**: The `\` character works as a line break on Unix based systems. If you are on a Windows based system the `\` character will cause this command to fail. Place this command on a single line if you are using Windows.\*\*
-
-    ````
+    > **Note**: The `\` character works as a line break on Unix based systems. If you are on a Windows based system the `\` character will cause this command to fail. Place this command on a single line if you are using Windows.
 
 1.  Copy the entire contents of the command's response, we'll store it as secrets to authorize in Azure. Here's an example of what it looks like:
     ```shell
