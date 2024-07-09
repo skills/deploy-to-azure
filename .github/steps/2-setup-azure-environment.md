@@ -31,22 +31,11 @@ We won't be going into detail on the steps of this workflow, but it would be a g
     ```shell
     az login
     ```
-1.  Copy the value of the `id:` field to a safe place. We'll call this `AZURE_SUBSCRIPTION_ID`. Here's an example of what it looks like:
+1.  Select the subscription you just selected from the interactive authentication prompt. Copy the value of the subscription id to a safe place. We'll call this `AZURE_SUBSCRIPTION_ID`. Here's an example of what it looks like:
     ```shell
-    [
-    {
-      "cloudName": "AzureCloud",
-      "id": "f****a09-****-4d1c-98**-f**********c", # <-- Copy this id field
-      "isDefault": true,
-      "name": "some-subscription-name",
-      "state": "Enabled",
-      "tenantId": "********-a**c-44**-**25-62*******61",
-      "user": {
-        "name": "mdavis******@*********.com",
-        "type": "user"
-        }
-      }
-    ]
+    No     Subscription name    Subscription ID                       Tenant
+    -----  -------------------  ------------------------------------  -----------------
+    [1] *  some-subscription    f****a09-****-4d1c-98**-f**********c  Default Directory
     ```
 1.  In your terminal, run the command below.
 
