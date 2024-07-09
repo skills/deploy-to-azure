@@ -122,7 +122,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
             with:
               registry: ${{ env.IMAGE_REGISTRY_URL }}
               username: ${{ github.actor }}
-              password: ${{ secrets.GITHUB_TOKEN }}
+              password: ${{ secrets.CR_PAT }}
 
           - name: Extract metadata (tags, labels) for Docker
             id: meta
@@ -154,7 +154,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
             with:
               login-server: ${{env.IMAGE_REGISTRY_URL}}
               username: ${{ github.actor }}
-              password: ${{ secrets.GITHUB_TOKEN }}
+              password: ${{ secrets.CR_PAT }}
 
           - name: Deploy web app container
             uses: azure/webapps-deploy@v3
