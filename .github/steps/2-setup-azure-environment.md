@@ -52,20 +52,21 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 
     ```shell
     az ad sp create-for-rbac --name "GitHub-Actions" --role contributor \
-     --scopes /subscriptions/{subscription-id}
+     --scopes /subscriptions/{subscription-id} \
+     --sdk-auth
 
         # Replace {subscription-id} with the same id stored in AZURE_SUBSCRIPTION_ID.
     ```
 
     > **Note**: The `\` character works as a line break on Unix based systems. If you are on a Windows based system the `\` character will cause this command to fail. Place this command on a single line if you are using Windows.
 
-1.  Copy the entire contents of the command's response, we'll store it as secrets to authorize in Azure. Here's an example of what it looks like:
+1.  Copy the entire contents of the command's response, we'll call this `AZURE_CREDENTIALS`. Here's an example of what it looks like:
     ```shell
     {
-      "appId": "<GUID>",
-      "displayName": "GitHub-Actions",
-      "password": "<GUID>",
-      "tenant": "<GUID>",
+      "clientId": "<GUID>",
+      "clientSecret": "<GUID>",
+      "subscriptionId": "<GUID>",
+      "tenantId": "<GUID>",
       (...)
     }
     ```
@@ -74,10 +75,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 1.  Name your new secret **AZURE_SUBSCRIPTION_ID** and paste the value from the `id:` field in the first command.
 1.  Click **Add secret**.
 1.  Click **New repository secret** again.
-1.  Name the second secret **AZURE_CLIENT_ID** and paste the value from the `appId:` field from the second terminal command you entered.
-1.  Click **Add secret**
-1.  Click **New repository secret** again.
-1.  Name the third secret **AZURE_TENANT_ID** and paste the value from the `tenant:` field from the second terminal command you entered.
+1.  Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
 1.  Click **Add secret**
 1.  Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
 
@@ -164,9 +162,7 @@ jobs:
       - name: "Login via Azure CLI"
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - uses: azure/docker-login@v1
         with:
