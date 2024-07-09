@@ -77,113 +77,109 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 1.  Click **New repository secret** again.
 1.  Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
 1.  Click **Add secret**
-1.  Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
+1.  Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions. The full workflow file, should look like this:
+    ```yaml
+    name: Deploy to staging
 
-The full workflow file, should look like this:
+    on:
+      pull_request:
+        types: [labeled]
 
-```yaml
-name: Deploy to staging
+    env:
+      IMAGE_REGISTRY_URL: ghcr.io
+      ###############################################
+      ### Replace <username> with GitHub username ###
+      ###############################################
+      DOCKER_IMAGE_NAME: <username>-azure-ttt
+      AZURE_WEBAPP_NAME: <username>-ttt-app
+      ###############################################
 
-on:
-  pull_request:
-    types: [labeled]
+    jobs:
+      build:
+        if: contains(github.event.pull_request.labels.*.name, 'stage')
 
-env:
-  IMAGE_REGISTRY_URL: ghcr.io
-  ###############################################
-  ### Replace <username> with GitHub username ###
-  ###############################################
-  DOCKER_IMAGE_NAME: <username>-azure-ttt
-  AZURE_WEBAPP_NAME: <username>-ttt-app
-  ###############################################
+        runs-on: ubuntu-latest
 
-jobs:
-  build:
-    if: contains(github.event.pull_request.labels.*.name, 'stage')
+        steps:
+          - uses: actions/checkout@v4
+          - uses: actions/setup-node@v4
+            with:
+              node-version: 16
+          - name: npm install and build webpack
+            run: |
+              npm install
+              npm run build
+          - uses: actions/upload-artifact@v4
+            with:
+              name: webpack artifacts
+              path: public/
 
-    runs-on: ubuntu-latest
+      Build-Docker-Image:
+        runs-on: ubuntu-latest
+        needs: build
+        name: Build image and store in GitHub Container Registry
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
 
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 16
-      - name: npm install and build webpack
-        run: |
-          npm install
-          npm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: webpack artifacts
-          path: public/
+          - name: Download built artifact
+            uses: actions/download-artifact@v4
+            with:
+              name: webpack artifacts
+              path: public
 
-  Build-Docker-Image:
-    runs-on: ubuntu-latest
-    needs: build
-    name: Build image and store in GitHub Container Registry
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+          - name: Log in to GHCR
+            uses: docker/login-action@v3
+            with:
+              registry: ${{ env.IMAGE_REGISTRY_URL }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download built artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: webpack artifacts
-          path: public
+          - name: Extract metadata (tags, labels) for Docker
+            id: meta
+            uses: docker/metadata-action@v5
+            with:
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
+              tags: |
+                type=sha,format=long,prefix=
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.IMAGE_REGISTRY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          - name: Build and push Docker image
+            uses: docker/build-push-action@v5
+            with:
+              context: .
+              push: true
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
-          tags: |
-            type=sha,format=long,prefix=
+      Deploy-to-Azure:
+        runs-on: ubuntu-latest
+        needs: Build-Docker-Image
+        name: Deploy app container to Azure
+        steps:
+          - name: "Login via Azure CLI"
+            uses: azure/login@v2
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          - uses: azure/docker-login@v1
+            with:
+              login-server: ${{env.IMAGE_REGISTRY_URL}}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-  Deploy-to-Azure:
-    runs-on: ubuntu-latest
-    needs: Build-Docker-Image
-    name: Deploy app container to Azure
-    steps:
-      - name: "Login via Azure CLI"
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          - name: Deploy web app container
+            uses: azure/webapps-deploy@v3
+            with:
+              app-name: ${{env.AZURE_WEBAPP_NAME}}
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{env.IMAGE_REGISTRY_URL}}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy web app container
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{env.AZURE_WEBAPP_NAME}}
-          images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
-
-      - name: Azure logout via Azure CLI
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az logout
-            az cache purge
-            az account clear
-```
-
-16. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
-17. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
+          - name: Azure logout via Azure CLI
+            uses: azure/CLI@v2
+            with:
+              inlineScript: |
+                az logout
+                az cache purge
+                az account clear
+    ```
+1. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
+1. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
