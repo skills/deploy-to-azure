@@ -31,7 +31,7 @@ We won't be going into detail on the steps of this workflow, but it would be a g
     ```shell
     az login
     ```
-1.  Select the subscription you just selected from the interactive authentication prompt. Copy the value of the subscription id to a safe place. We'll call this `AZURE_SUBSCRIPTION_ID`. Here's an example of what it looks like:
+1.  Select the subscription you just selected from the interactive authentication prompt. Copy the value of the subscription ID to a safe place. We'll call this `AZURE_SUBSCRIPTION_ID`. Here's an example of what it looks like:
     ```shell
     No     Subscription name    Subscription ID                       Tenant
     -----  -------------------  ------------------------------------  -----------------
