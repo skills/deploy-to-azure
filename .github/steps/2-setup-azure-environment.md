@@ -31,41 +31,31 @@ We won't be going into detail on the steps of this workflow, but it would be a g
     ```shell
     az login
     ```
-1.  Copy the value of the `id:` field to a safe place. We'll call this `AZURE_SUBSCRIPTION_ID`. Here's an example of what it looks like:
+1.  Select the subscription you just selected from the interactive authentication prompt. Copy the value of the subscription ID to a safe place. We'll call this `AZURE_SUBSCRIPTION_ID`. Here's an example of what it looks like:
     ```shell
-    [
-    {
-      "cloudName": "AzureCloud",
-      "id": "f****a09-****-4d1c-98**-f**********c", # <-- Copy this id field
-      "isDefault": true,
-      "name": "some-subscription-name",
-      "state": "Enabled",
-      "tenantId": "********-a**c-44**-**25-62*******61",
-      "user": {
-        "name": "mdavis******@*********.com",
-        "type": "user"
-        }
-      }
-    ]
+    No     Subscription name    Subscription ID                       Tenant
+    -----  -------------------  ------------------------------------  -----------------
+    [1] *  some-subscription    f****a09-****-4d1c-98**-f**********c  Default Directory
     ```
 1.  In your terminal, run the command below.
 
     ```shell
     az ad sp create-for-rbac --name "GitHub-Actions" --role contributor \
-     --scopes /subscriptions/{subscription-id}
+     --scopes /subscriptions/{subscription-id} \
+     --sdk-auth
 
         # Replace {subscription-id} with the same id stored in AZURE_SUBSCRIPTION_ID.
     ```
 
     > **Note**: The `\` character works as a line break on Unix based systems. If you are on a Windows based system the `\` character will cause this command to fail. Place this command on a single line if you are using Windows.
 
-1.  Copy the entire contents of the command's response, we'll store it as secrets to authorize in Azure. Here's an example of what it looks like:
+1.  Copy the entire contents of the command's response, we'll call this `AZURE_CREDENTIALS`. Here's an example of what it looks like:
     ```shell
     {
-      "appId": "<GUID>",
-      "displayName": "GitHub-Actions",
-      "password": "<GUID>",
-      "tenant": "<GUID>",
+      "clientId": "<GUID>",
+      "clientSecret": "<GUID>",
+      "subscriptionId": "<GUID>",
+      "tenantId": "<GUID>",
       (...)
     }
     ```
@@ -74,120 +64,111 @@ We won't be going into detail on the steps of this workflow, but it would be a g
 1.  Name your new secret **AZURE_SUBSCRIPTION_ID** and paste the value from the `id:` field in the first command.
 1.  Click **Add secret**.
 1.  Click **New repository secret** again.
-1.  Name the second secret **AZURE_CLIENT_ID** and paste the value from the `appId:` field from the second terminal command you entered.
+1.  Name the second secret **AZURE_CREDENTIALS** and paste the entire contents from the second terminal command you entered.
 1.  Click **Add secret**
-1.  Click **New repository secret** again.
-1.  Name the third secret **AZURE_TENANT_ID** and paste the value from the `tenant:` field from the second terminal command you entered.
-1.  Click **Add secret**
-1.  Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions.
+1.  Go back to the Pull requests tab and in your pull request go to the **Files Changed** tab. Find and then edit the `.github/workflows/deploy-staging.yml` file to use some new actions. The full workflow file, should look like this:
+    ```yaml
+    name: Deploy to staging
 
-The full workflow file, should look like this:
+    on:
+      pull_request:
+        types: [labeled]
 
-```yaml
-name: Deploy to staging
+    env:
+      IMAGE_REGISTRY_URL: ghcr.io
+      ###############################################
+      ### Replace <username> with GitHub username ###
+      ###############################################
+      DOCKER_IMAGE_NAME: <username>-azure-ttt
+      AZURE_WEBAPP_NAME: <username>-ttt-app
+      ###############################################
 
-on:
-  pull_request:
-    types: [labeled]
+    jobs:
+      build:
+        if: contains(github.event.pull_request.labels.*.name, 'stage')
 
-env:
-  IMAGE_REGISTRY_URL: ghcr.io
-  ###############################################
-  ### Replace <username> with GitHub username ###
-  ###############################################
-  DOCKER_IMAGE_NAME: <username>-azure-ttt
-  AZURE_WEBAPP_NAME: <username>-ttt-app
-  ###############################################
+        runs-on: ubuntu-latest
 
-jobs:
-  build:
-    if: contains(github.event.pull_request.labels.*.name, 'stage')
+        steps:
+          - uses: actions/checkout@v4
+          - uses: actions/setup-node@v4
+            with:
+              node-version: 16
+          - name: npm install and build webpack
+            run: |
+              npm install
+              npm run build
+          - uses: actions/upload-artifact@v4
+            with:
+              name: webpack artifacts
+              path: public/
 
-    runs-on: ubuntu-latest
+      Build-Docker-Image:
+        runs-on: ubuntu-latest
+        needs: build
+        name: Build image and store in GitHub Container Registry
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
 
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 16
-      - name: npm install and build webpack
-        run: |
-          npm install
-          npm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: webpack artifacts
-          path: public/
+          - name: Download built artifact
+            uses: actions/download-artifact@v4
+            with:
+              name: webpack artifacts
+              path: public
 
-  Build-Docker-Image:
-    runs-on: ubuntu-latest
-    needs: build
-    name: Build image and store in GitHub Container Registry
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+          - name: Log in to GHCR
+            uses: docker/login-action@v3
+            with:
+              registry: ${{ env.IMAGE_REGISTRY_URL }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.CR_PAT }}
 
-      - name: Download built artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: webpack artifacts
-          path: public
+          - name: Extract metadata (tags, labels) for Docker
+            id: meta
+            uses: docker/metadata-action@v5
+            with:
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
+              tags: |
+                type=sha,format=long,prefix=
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.IMAGE_REGISTRY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          - name: Build and push Docker image
+            uses: docker/build-push-action@v5
+            with:
+              context: .
+              push: true
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}
-          tags: |
-            type=sha,format=long,prefix=
+      Deploy-to-Azure:
+        runs-on: ubuntu-latest
+        needs: Build-Docker-Image
+        name: Deploy app container to Azure
+        steps:
+          - name: "Login via Azure CLI"
+            uses: azure/login@v2
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          - uses: azure/docker-login@v1
+            with:
+              login-server: ${{env.IMAGE_REGISTRY_URL}}
+              username: ${{ github.actor }}
+              password: ${{ secrets.CR_PAT }}
 
-  Deploy-to-Azure:
-    runs-on: ubuntu-latest
-    needs: Build-Docker-Image
-    name: Deploy app container to Azure
-    steps:
-      - name: "Login via Azure CLI"
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          - name: Deploy web app container
+            uses: azure/webapps-deploy@v3
+            with:
+              app-name: ${{env.AZURE_WEBAPP_NAME}}
+              images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{env.IMAGE_REGISTRY_URL}}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy web app container
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{env.AZURE_WEBAPP_NAME}}
-          images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
-
-      - name: Azure logout via Azure CLI
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az logout
-            az cache purge
-            az account clear
-```
-
-16. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
-17. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
+          - name: Azure logout via Azure CLI
+            uses: azure/CLI@v2
+            with:
+              inlineScript: |
+                az logout
+                az cache purge
+                az account clear
+    ```
+1. After you've edited the file, click **Commit changes...** and commit to the `staging-workflow` branch.
+1. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.

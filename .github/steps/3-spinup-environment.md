@@ -23,7 +23,7 @@ Through the power of GitHub Actions, we can create, configure, and destroy these
 Personal access tokens (PATs) are an alternative to using passwords for authentication to GitHub. We will use a PAT to allow your web app to pull the container image after your workflow pushes a newly built image to the registry.
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-2. Create a personal access token with the `repo` and `read:packages` scopes. For more information, see ["Creating a personal access token."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+2. Create a personal access token with the `repo` and `write:packages` scopes. For more information, see ["Creating a personal access token."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 3. Once you have generated the token we will need to store it in a secret so that it can be used within a workflow. Create a new repository secret named `CR_PAT` and paste the PAT token in as the value.
 4. With this done we can move on to setting up our workflow.
 
@@ -32,84 +32,80 @@ Personal access tokens (PATs) are an alternative to using passwords for authenti
 To deploy successfully to our Azure environment:
 
 1. Create a new branch called `azure-configuration` by clicking on the branch dropdown on the top, left hand corner of the `Code` tab on your repository page.
-2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml` by clicking **Add file**.
+2. Once you're in the new `azure-configuration` branch, go into the `.github/workflows` directory and create a new file titled `spinup-destroy.yml` by clicking **Add file**. Copy and paste the following into this new file:
+    ```yaml
+    name: Configure Azure environment
 
-Copy and paste the following into this new file:
+    on:
+      pull_request:
+        types: [labeled]
 
-```yaml
-name: Configure Azure environment
+    env:
+      IMAGE_REGISTRY_URL: ghcr.io
+      AZURE_RESOURCE_GROUP: cd-with-actions
+      AZURE_APP_PLAN: actions-ttt-deployment
+      AZURE_LOCATION: '"East US"'
+      ###############################################
+      ### Replace <username> with GitHub username ###
+      ###############################################
+      AZURE_WEBAPP_NAME: <username>-ttt-app
 
-on:
-  pull_request:
-    types: [labeled]
+    jobs:
+      setup-up-azure-resources:
+        runs-on: ubuntu-latest
+        if: contains(github.event.pull_request.labels.*.name, 'spin up environment')
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
 
-env:
-  IMAGE_REGISTRY_URL: ghcr.io
-  AZURE_RESOURCE_GROUP: cd-with-actions
-  AZURE_APP_PLAN: actions-ttt-deployment
-  AZURE_LOCATION: '"East US"'
-  ###############################################
-  ### Replace <username> with GitHub username ###
-  ###############################################
-  AZURE_WEBAPP_NAME: <username>-ttt-app
+          - name: Azure login
+            uses: azure/login@v2
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-jobs:
-  setup-up-azure-resources:
-    runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'spin up environment')
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+          - name: Create Azure resource group
+            if: success()
+            run: |
+              az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-      - name: Azure login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          - name: Create Azure app service plan
+            if: success()
+            run: |
+              az appservice plan create --resource-group ${{env.AZURE_RESOURCE_GROUP}} --name ${{env.AZURE_APP_PLAN}} --is-linux --sku F1 --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-      - name: Create Azure resource group
-        if: success()
-        run: |
-          az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          - name: Create webapp resource
+            if: success()
+            run: |
+              az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }}  --deployment-container-image-name nginx --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-      - name: Create Azure app service plan
-        if: success()
-        run: |
-          az appservice plan create --resource-group ${{env.AZURE_RESOURCE_GROUP}} --name ${{env.AZURE_APP_PLAN}} --is-linux --sku F1 --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          - name: Configure webapp to use GHCR
+            if: success()
+            run: |
+              az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.CR_PAT}} --docker-registry-server-url https://${{env.IMAGE_REGISTRY_URL}} --docker-registry-server-user ${{github.actor}} --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-      - name: Create webapp resource
-        if: success()
-        run: |
-          az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }}  --deployment-container-image-name nginx --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      destroy-azure-resources:
+        runs-on: ubuntu-latest
 
-      - name: Configure webapp to use GHCR
-        if: success()
-        run: |
-          az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.CR_PAT}} --docker-registry-server-url https://${{env.IMAGE_REGISTRY_URL}} --docker-registry-server-user ${{github.actor}} --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+        if: contains(github.event.pull_request.labels.*.name, 'destroy environment')
 
-  destroy-azure-resources:
-    runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
 
-    if: contains(github.event.pull_request.labels.*.name, 'destroy environment')
+          - name: Azure login
+            uses: azure/login@v2
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Azure login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Destroy Azure environment
-        if: success()
-        run: |
-          az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
-```
-
-3. Click **Commit changes...** and select `Commit directly to the azure-configuration branch.` before clicking **Commit changes**.
-4. Go to the Pull requests tab of the repository.
-5. There should be a yellow banner with the `azure-configuration` branch where you can click **Compare & pull request**.
-6. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`.
+          - name: Destroy Azure environment
+            if: success()
+            run: |
+              az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
+    ```
+1. Click **Commit changes...** and select `Commit directly to the azure-configuration branch.` before clicking **Commit changes**.
+1. Go to the Pull requests tab of the repository.
+1. There should be a yellow banner with the `azure-configuration` branch where you can click **Compare & pull request**.
+1. Set the title of the Pull request to: `Added spinup-destroy.yml workflow` and click `Create pull request`.
 
 We will cover the key functionality below and then put the workflow to use by applying a label to the pull request.
 
