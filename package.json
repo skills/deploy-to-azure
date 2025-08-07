@@ -27,7 +27,7 @@
     "babel-jest": "^29.7.0",
     "babel-loader": "^8.0.5",
     "jest": "^27.5.1",
-    "standard": "^14.3.1",
+    "standard": "^17.1.2",
     "webpack": "^5.92.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
