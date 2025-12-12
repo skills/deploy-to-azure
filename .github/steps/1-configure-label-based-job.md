@@ -52,7 +52,7 @@ For now, we'll focus on staging. We'll spin up and destroy our environment in a 
 
        if: contains(github.event.pull_request.labels.*.name, 'stage')
    ```
-1. Click **Start commit**, and choose to make a new branch named `staging-workflow`.
+1. Click **Commit changes...**, and choose to make a new branch named `staging-workflow`.
 1. Click **Propose changes**.
 1. Click **Create pull request**.
 1. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
